@@ -80,7 +80,7 @@ public class GeoDbAdapter {
 
   
   
-  public long createPosition(int startRange, int stopRange, int positionId)
+  public long addRange(int startRange, int stopRange, int positionId)
   {
 	    ContentValues contentValues = new ContentValues();
   	    contentValues.put(START_RANGE_KEY, startRange);
@@ -90,7 +90,7 @@ public class GeoDbAdapter {
   }
   
 
-  public boolean removeObject(long _rowIndex) {
+  public boolean removeRange(long _rowIndex) {
     return db.delete(RANGE_TABLE, ROW_ID + "=" + _rowIndex, null) > 0;
   }
 
@@ -104,7 +104,7 @@ public class GeoDbAdapter {
 
   
     
-  public Cursor getObject(long _rowIndex) {
+  public Cursor getRange(long _rowIndex) {
     
     Cursor res = db.query(RANGE_TABLE, new String[] {ROW_ID, START_RANGE_KEY, END_RANGE_KEY, POSITION_ID_KEY}, ROW_ID + " = " + _rowIndex, 
     		null, null, null, null);

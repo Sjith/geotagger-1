@@ -3,10 +3,18 @@ package fede.geotagger;
 import android.app.ListActivity;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.View;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 public class GeoTagger extends ListActivity {
 	private GeoDbAdapter mDbHelper;
+	private long mItemId;
+	
+	static final private int MENU_ADD_OBJ = Menu.FIRST;
+	static final private int MENU_EDIT_OBJ = Menu.FIRST + 1;
+	static final private int MENU_DEL_OBJ = Menu.FIRST + 2;
 	
 	
     /** Called when the activity is first created. */
@@ -19,6 +27,11 @@ public class GeoTagger extends ListActivity {
         fillData();
         registerForContextMenu(getListView());
     }
+    
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		mItemId = id;
+	}
     
     private void fillData(){
     	Cursor positionCursor = mDbHelper.getAllRanges();
