@@ -12,7 +12,8 @@
             </intent-filter>
         </activity>
 
-    </application>
+    <activity android:name=".RangeElementEditor"></activity>
+</application>
 
 
 </manifest> 
