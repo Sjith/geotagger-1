@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+
+	<TextView android:text="@string/latitude_name" android:id="@+id/PositionText01" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+	<TextView  android:id="@+id/PositionLayoutLatitude" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+	
+	<TextView android:text="@string/longitude_name" android:id="@+id/PositionText01" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+	<TextView  android:id="@+id/PositionLayoutLongitude" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+	
+	<TextView android:text="@string/altitude_name" android:id="@+id/PositionText01" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+	<TextView  android:id="@+id/PositionLayoutAltitude" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+	
+	<TextView android:text="@string/positon_name_name" android:id="@+id/PositionText01" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+	<EditText android:text="@string/positon_name_name" android:id="@+id/PositionNameEditText" android:layout_width="wrap_content" android:layout_height="wrap_content"></EditText>
+	<LinearLayout android:id="@+id/LinearLayout01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
+		<Button android:text="@string/update_position_name" android:id="@+id/UpdatePositionButton" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+		<Button android:text="@string/ok_name" android:id="@+id/PositionOKButton" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+		<Button android:text="@string/cancel_name" android:id="@+id/PositionCancelButton" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+	</LinearLayout>
+
+</LinearLayout>

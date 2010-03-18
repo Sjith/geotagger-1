@@ -37,10 +37,14 @@ public class GeoDbAdapter {
     private static final String POSITION_TABLE = "Position";
 	public static final String POSITION_NAME_KEY = "PositionName";
 	public static final int POSITION_NAME_COLUMN = 1;
-	
+	public static final String POSITION_LATITUDE_KEY = "Latitude";
+	public static final int POSITION_LATITUDE_COLUMN = 2;	
+	public static final String POSITION_LONGITUDE_KEY = "Longitude";
+	public static final int POSITION_LONGITUDE_COLUMN = 3;
+	public static final String POSITION_ALTITUDE_KEY = "Altitude";
+	public static final int POSITION_ALTITUDE_COLUMN = 4;
 	public static final String POSITION_ROW_ID = "_id";	
 	
-
   // TODO: Create public field for each column in your table.
   
   // SQL Statement to create a new database.
@@ -51,10 +55,13 @@ public class GeoDbAdapter {
     END_RANGE_KEY + " number, " +
     POSITION_ID_KEY + " number);";
     
-	
-  
-
-  
+  private static final String DATABASE_POSITION_CREATE = "create table " + 
+  POSITION_TABLE + " (" + ROW_ID + 
+    " integer primary key autoincrement, " +
+    POSITION_NAME_KEY + " string, " + 
+    POSITION_LATITUDE_KEY + " string, " +
+    POSITION_LONGITUDE_KEY + " string, " +
+    POSITION_ALTITUDE_KEY + " string);";
     			
     			
   // Variable to hold the database instance
@@ -78,8 +85,73 @@ public class GeoDbAdapter {
     db.close();
   }
 
+  // POSITION
+  
+  public long addPosition(String positionName, String latitude, String longitude, String altitude)
+  {
+	    ContentValues contentValues = new ContentValues();
+  	    contentValues.put(POSITION_LATITUDE_KEY, latitude);
+  	    contentValues.put(POSITION_LONGITUDE_KEY, longitude);
+  	  	contentValues.put(POSITION_ALTITUDE_KEY, altitude);
+  		contentValues.put(POSITION_NAME_KEY, positionName);
+  	    
+	   return db.insert(POSITION_TABLE, null, contentValues);
+  }
+  
+
+  public boolean removePosition(long _rowIndex) {
+    return db.delete(POSITION_TABLE, ROW_ID + "=" + _rowIndex, null) > 0;
+  }
+
+   
+  
+  public Cursor getAllPositions () {
+    return db.query(POSITION_TABLE, new String[] {POSITION_ROW_ID, 
+    											  POSITION_NAME_KEY, 
+    											  POSITION_LATITUDE_KEY,
+    											  POSITION_LONGITUDE_KEY,
+    											  POSITION_ALTITUDE_KEY}, 
+                    null, null, null, null, null);
+  }
+
+
+  
+    
+  public Cursor getPosition(long _rowIndex) {
+    
+    Cursor res = db.query(RANGE_TABLE, new String[] {POSITION_ROW_ID, 
+    												 POSITION_NAME_KEY, 
+													 POSITION_LATITUDE_KEY,
+													 POSITION_LONGITUDE_KEY,
+													 POSITION_ALTITUDE_KEY}, ROW_ID + " = " + _rowIndex, 
+    		null, null, null, null);
+    
+    if(res != null){
+    	res.moveToFirst();
+    }
+    return res;
+  }
+  
+  	  
   
   
+  public int updatePosition(long _rowIndex, String positionName, String latitude, String longitude, String altitude) 
+  {
+    String where = POSITION_ROW_ID + " = " + _rowIndex;
+    ContentValues contentValues = new ContentValues();
+    contentValues.put(POSITION_LATITUDE_KEY, latitude);
+    contentValues.put(POSITION_LONGITUDE_KEY, longitude);
+  	contentValues.put(POSITION_ALTITUDE_KEY, altitude);
+	contentValues.put(POSITION_NAME_KEY, positionName);
+
+   // TODO Fill in the ContentValue based on the new object
+    return db.update(POSITION_TABLE, contentValues, where, null);
+  }
+  
+  
+  // RANGE
+  
+
   public long addRange(int startRange, int stopRange, int positionId)
   {
 	    ContentValues contentValues = new ContentValues();
@@ -142,6 +214,7 @@ public class GeoDbAdapter {
     @Override
     public void onCreate(SQLiteDatabase _db) {
       _db.execSQL(DATABASE_RANGE_CREATE);
+      _db.execSQL(DATABASE_POSITION_CREATE);
     }
 
     // Called when there is a database version mismatch meaning that the version
@@ -159,6 +232,7 @@ public class GeoDbAdapter {
 
       // The simplest case is to drop the old table and create a new one.
       _db.execSQL("DROP TABLE IF EXISTS " + RANGE_TABLE + ";");
+      _db.execSQL("DROP TABLE IF EXISTS " + POSITION_TABLE + ";");
       // Create a new one.
       onCreate(_db);
     }

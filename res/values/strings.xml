@@ -9,4 +9,12 @@
 <string name="add_new_position_name">Add New Position</string>
 <string name="ok_name">Ok</string>
 <string name="cancel_name">Cancel</string>
+<string name="error_name">Error</string>
+<string name="error_not_choosen_pos">You need to choose a valid position</string>
+<string name="get_position_button_name">Get Position Now</string>
+<string name="latitude_name">Latitude</string>
+<string name="longitude_name">Longitude</string>
+<string name="altitude_name">Altitude</string>
+<string name="positon_name_name">Position Name</string>
+<string name="update_position_name">Update Position</string>
 </resources>

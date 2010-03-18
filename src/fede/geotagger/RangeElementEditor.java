@@ -1,9 +1,12 @@
 package fede.geotagger;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 
 public class RangeElementEditor extends Activity {
@@ -45,8 +48,15 @@ public class RangeElementEditor extends Activity {
 	}
 
 	private boolean checkAndAddRange(){
-		if(mPositionId == 0)
+		if(mPositionId == 0){
+			Dialog d = new Dialog(RangeElementEditor.this);
+			Window window = d.getWindow();
+			window.setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND, WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+			d.setTitle(R.string.error_name);
+			d.setContentView(R.layout.text_dialog);
+			d.show();
 			return false;
+		}
 		
 		Long fromRange = Long.parseLong(mFromRange.getText().toString());
 		Long toRange = Long.parseLong(mToRange.getText().toString());
