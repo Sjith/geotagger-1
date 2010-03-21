@@ -8,7 +8,7 @@
 <TextView android:text="@string/from_name" android:id="@+id/TextView01" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
 <EditText  android:id="@+id/FromEditText" android:layout_width="wrap_content" android:layout_height="wrap_content">
 </EditText><TextView android:text="@string/to_name" android:id="@+id/TextView02" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-<EditText android:id="@+id/EditText02" android:layout_width="wrap_content" android:layout_height="wrap_content"></EditText>
+<EditText android:id="@+id/ToEditText" android:layout_width="wrap_content" android:layout_height="wrap_content"></EditText>
 
 
 

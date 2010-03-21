@@ -13,6 +13,7 @@
         </activity>
 
     <activity android:name=".RangeElementEditor"></activity>
+<activity android:name=".PositionEditor"></activity>
 </application>
 
 

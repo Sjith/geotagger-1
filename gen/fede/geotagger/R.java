@@ -16,7 +16,6 @@ public final class R {
     public static final class id {
         public static final int AddNewPositionButton=0x7f05000e;
         public static final int ChoosenPosition=0x7f05000f;
-        public static final int EditText02=0x7f05000c;
         public static final int FromEditText=0x7f05000a;
         public static final int GetPositionButton=0x7f05000d;
         public static final int LinearLayout01=0x7f050005;
@@ -30,6 +29,7 @@ public final class R {
         public static final int TextDialog=0x7f050012;
         public static final int TextView01=0x7f050009;
         public static final int TextView02=0x7f05000b;
+        public static final int ToEditText=0x7f05000c;
         public static final int UpdatePositionButton=0x7f050006;
         public static final int range_elem_from=0x7f050010;
         public static final int range_elem_to=0x7f050011;
@@ -44,21 +44,22 @@ public final class R {
     }
     public static final class string {
         public static final int add_new_position_name=0x7f040006;
-        public static final int altitude_name=0x7f04000e;
+        public static final int altitude_name=0x7f04000f;
         public static final int app_name=0x7f040001;
         public static final int cancel_name=0x7f040008;
         public static final int choose_position_name=0x7f040005;
-        public static final int error_name=0x7f040009;
-        public static final int error_not_choosen_pos=0x7f04000a;
+        public static final int edit_name=0x7f040009;
+        public static final int error_name=0x7f04000a;
+        public static final int error_not_choosen_pos=0x7f04000b;
         public static final int from_name=0x7f040003;
-        public static final int get_position_button_name=0x7f04000b;
+        public static final int get_position_button_name=0x7f04000c;
         public static final int hello=0x7f040000;
-        public static final int latitude_name=0x7f04000c;
-        public static final int longitude_name=0x7f04000d;
+        public static final int latitude_name=0x7f04000d;
+        public static final int longitude_name=0x7f04000e;
         public static final int ok_name=0x7f040007;
-        public static final int positon_name_name=0x7f04000f;
+        public static final int positon_name_name=0x7f040010;
         public static final int ranges_name=0x7f040002;
         public static final int to_name=0x7f040004;
-        public static final int update_position_name=0x7f040010;
+        public static final int update_position_name=0x7f040011;
     }
 }

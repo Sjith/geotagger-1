@@ -1,6 +1,7 @@
 package fede.geotagger;
 
 import android.app.ListActivity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
@@ -10,12 +11,16 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 public class GeoTagger extends ListActivity {
+
 	private GeoDbAdapter mDbHelper;
 	private long mItemId;
 	
 	static final private int MENU_ADD = Menu.FIRST;
 	static final private int MENU_EDIT = Menu.FIRST + 1;
 	static final private int MENU_DEL = Menu.FIRST + 2;
+	
+    private static final int RANGE_CREATE=0;
+    private static final int RANGE_EDIT=1;
 	
 	
     /** Called when the activity is first created. */
@@ -48,6 +53,13 @@ public class GeoTagger extends ListActivity {
 		groupId = 0;
 		menuItemId = MENU_EDIT;
 		menuItemOrder = Menu.NONE;	 
+		menuItemText = R.string.edit_name;
+		
+		MenuItem editItem = menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
+		
+		groupId = 0;
+		menuItemId = MENU_DEL;
+		menuItemOrder = Menu.NONE;	 
 		menuItemText = R.string.cancel_name;
 		
 		MenuItem cancelItem = menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
@@ -55,8 +67,27 @@ public class GeoTagger extends ListActivity {
 		return true;
 	}
 	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch(item.getItemId()) {
+        case MENU_ADD:
+            createRange();
+            return true;
+        }
+		
+		return super.onOptionsItemSelected(item);
+	}
 	
+	private void createRange(){
+		Intent i = new Intent(this, RangeElementEditor.class);
+        startActivityForResult(i, RANGE_CREATE);
+	}
 	
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        fillData();
+    }
 	
     private void fillData(){
     	Cursor positionCursor = mDbHelper.getAllRanges();

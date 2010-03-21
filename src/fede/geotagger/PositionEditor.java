@@ -2,6 +2,7 @@ package fede.geotagger;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,7 +20,6 @@ public class PositionEditor extends Activity {
 	private EditText mPositionName;
 	private GeoDbAdapter mDbHelper;
 	private int mPositionId;
-	private int mRangeRowId;
 	private String mLatitude;
 	private String mLongitude;
 	private String mAltitude;
@@ -89,10 +89,12 @@ public class PositionEditor extends Activity {
 		super.onOptionsItemSelected(item);
 		switch(item.getItemId()){
 			case MENU_OK:
-// TODO
+				Intent result = new Intent();
+				result.putExtra(GeoDbAdapter.POSITION_ID_KEY, mPositionId);
+				setResult(RESULT_OK, result);
 			return true;			
 			case MENU_CANCEL:
-			// TODO HANDLE CANCEL CASE	
+				setResult(RESULT_CANCELED);
 			return true;
 		}
 	
