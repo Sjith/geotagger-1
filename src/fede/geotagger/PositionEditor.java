@@ -1,14 +1,11 @@
 package fede.geotagger;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -19,7 +16,7 @@ public class PositionEditor extends Activity {
 	
 	private EditText mPositionName;
 	private GeoDbAdapter mDbHelper;
-	private int mPositionId;
+	private Long mPositionId;
 	private String mLatitude;
 	private String mLongitude;
 	private String mAltitude;
@@ -37,14 +34,18 @@ public class PositionEditor extends Activity {
 		mAltitudeText = (TextView) findViewById(R.id.PositionLayoutAltitude);
 		mLatitudeText = (TextView) findViewById(R.id.PositionLayoutLatitude);
 		mLongitudeText = (TextView) findViewById(R.id.PositionLayoutLongitude);
+		mPositionName = (EditText) findViewById(R.id.PositionNameEditText);
+		
+		mDbHelper = new GeoDbAdapter(this);
+        mDbHelper.open();
 		
 		
 		Button updatePosButton = (Button) findViewById(R.id.UpdatePositionButton);
 		updatePosButton.setOnClickListener(new View.OnClickListener(){
 			public void onClick(View view){
-				mLatitude = "latitude";
-				mLongitude = "longitude";
-				mAltitude = "altitude";
+				mLatitude = "latitudeName";
+				mLongitude = "longitudeName";
+				mAltitude = "altitudeName";
 				// TODO Take real location from gps / cell / whatever
 		
 				mAltitudeText.setText(mAltitude);
@@ -54,9 +55,17 @@ public class PositionEditor extends Activity {
 		
 
 		Button okButton = (Button) findViewById(R.id.PositionOKButton);
-		updatePosButton.setOnClickListener(new View.OnClickListener(){
+		okButton.setOnClickListener(new View.OnClickListener(){
 			public void onClick(View view){
-				mDbHelper.addPosition(mPositionName.toString(), mLatitudeText.toString(), mLongitudeText.toString(), mAltitudeText.toString());
+				String posName = mPositionName.getText().toString();
+				String latName = mLatitudeText.getText().toString();
+				String longName = mLongitudeText.getText().toString();
+				String altName = mAltitudeText.getText().toString();
+				
+				mPositionId = mDbHelper.addPosition(mPositionName.getText().toString(), 
+													mLatitudeText.getText().toString(), 
+													mLongitudeText.getText().toString(), 
+													mAltitudeText.getText().toString());
 				
 			}});
 		
@@ -92,9 +101,11 @@ public class PositionEditor extends Activity {
 				Intent result = new Intent();
 				result.putExtra(GeoDbAdapter.POSITION_ID_KEY, mPositionId);
 				setResult(RESULT_OK, result);
+				finish();	
 			return true;			
 			case MENU_CANCEL:
 				setResult(RESULT_CANCELED);
+				finish();	
 			return true;
 		}
 	

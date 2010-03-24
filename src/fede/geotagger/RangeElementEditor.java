@@ -37,6 +37,9 @@ public class RangeElementEditor extends Activity {
 		mFromRange = (EditText) findViewById(R.id.FromEditText);
 		mToRange = (EditText) findViewById(R.id.ToEditText);
 		
+		mDbHelper = new GeoDbAdapter(this);
+        mDbHelper.open();
+		
 		Bundle extras = getIntent().getExtras();            
 		mRangeRowId = extras != null ? extras.getLong(GeoDbAdapter.ROW_ID) 
 		        : null;
@@ -93,7 +96,7 @@ public class RangeElementEditor extends Activity {
 		if(mPositionId == null){
 			return;
 		}
-		Cursor choosenPosition = mDbHelper.getPosition(mPositionId);
+		Cursor choosenPosition = mDbHelper.getPosition(mPositionId.longValue());
 		startManagingCursor(choosenPosition);
         mChoosenPosition.setText(choosenPosition.getString(GeoDbAdapter.POSITION_NAME_COLUMN));
 	}
@@ -153,7 +156,7 @@ public class RangeElementEditor extends Activity {
         switch(requestCode) {
 	        case NEW_POSITION_ACTION:
 	        case CHOOSE_POSITION_ACTION:
-	            mPositionId = extras.getLong(GeoDbAdapter.POSITION_NAME_KEY);
+	            mPositionId = extras.getLong(GeoDbAdapter.POSITION_ID_KEY);
 	            populatePositionName();
 	            break;
         }

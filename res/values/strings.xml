@@ -9,6 +9,7 @@
 <string name="add_new_position_name">Add New Position</string>
 <string name="ok_name">Ok</string>
 <string name="cancel_name">Cancel</string>
+<string name="add_name">Add</string>
 <string name="edit_name">Edit</string>
 <string name="error_name">Error</string>
 <string name="error_not_choosen_pos">You need to choose a valid position</string>

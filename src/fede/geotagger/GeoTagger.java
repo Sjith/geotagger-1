@@ -46,7 +46,7 @@ public class GeoTagger extends ListActivity {
 		int groupId = 0;
 		int menuItemId = MENU_ADD;
 		int menuItemOrder = Menu.NONE;	 
-		int menuItemText = R.string.ok_name;
+		int menuItemText = R.string.add_name;
 
 		MenuItem okItem = menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
 		
