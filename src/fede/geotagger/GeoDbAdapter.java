@@ -119,7 +119,7 @@ public class GeoDbAdapter {
     
   public Cursor getPosition(long _rowIndex) {
     
-    Cursor res = db.query(RANGE_TABLE, new String[] {POSITION_ROW_ID, 
+    Cursor res = db.query(POSITION_TABLE, new String[] {POSITION_ROW_ID, 
     												 POSITION_NAME_KEY, 
 													 POSITION_LATITUDE_KEY,
 													 POSITION_LONGITUDE_KEY,

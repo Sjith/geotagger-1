@@ -19,4 +19,5 @@
 <string name="altitude_name">Altitude</string>
 <string name="positon_name_name">Position Name</string>
 <string name="update_position_name">Update Position</string>
+<string name="positions_name">Available Positions</string>
 </resources>

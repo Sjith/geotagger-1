@@ -13,7 +13,7 @@
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content" 
     android:id="@+id/range_elem_from"
-    />
+    android:paddingLeft="2px" android:capitalize="none" android:paddingRight="2px"/>
 <TextView  
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content" 
@@ -23,5 +23,5 @@
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content" 
     android:id="@+id/range_elem_to"
-    />
+    android:paddingLeft="2px"/>
 </LinearLayout>

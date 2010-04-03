@@ -49,7 +49,8 @@ public class RangeElementEditor extends Activity {
 		Button choosePosButton = (Button) findViewById(R.id.GetPositionButton);
 		choosePosButton.setOnClickListener(new View.OnClickListener(){
 			public void onClick(View view){
-				// TODO CHOOSE POSITION FROM POSITION LIST VIEW
+				Intent i = new Intent(RangeElementEditor.this, PositionList.class);
+		        startActivityForResult(i, CHOOSE_POSITION_ACTION);
 			}});
 		
 		Button createNewPosButton = (Button) findViewById(R.id.AddNewPositionButton);
@@ -101,16 +102,18 @@ public class RangeElementEditor extends Activity {
         mChoosenPosition.setText(choosenPosition.getString(GeoDbAdapter.POSITION_NAME_COLUMN));
 	}
 	
-	
+	private void showErrorDialog(){
+		Dialog d = new Dialog(RangeElementEditor.this);
+		Window window = d.getWindow();
+		window.setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND, WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+		d.setTitle(R.string.error_name);
+		d.setContentView(R.layout.text_dialog);
+		d.show();
+	}
 	
 	private boolean checkAndAddRange(){
 		if(mPositionId == 0){
-			Dialog d = new Dialog(RangeElementEditor.this);
-			Window window = d.getWindow();
-			window.setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND, WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
-			d.setTitle(R.string.error_name);
-			d.setContentView(R.layout.text_dialog);
-			d.show();
+			showErrorDialog();	
 			return false;
 		}
 		

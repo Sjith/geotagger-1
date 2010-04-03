@@ -56,12 +56,7 @@ public class PositionEditor extends Activity {
 
 		Button okButton = (Button) findViewById(R.id.PositionOKButton);
 		okButton.setOnClickListener(new View.OnClickListener(){
-			public void onClick(View view){
-				String posName = mPositionName.getText().toString();
-				String latName = mLatitudeText.getText().toString();
-				String longName = mLongitudeText.getText().toString();
-				String altName = mAltitudeText.getText().toString();
-				
+			public void onClick(View view){				
 				mPositionId = mDbHelper.addPosition(mPositionName.getText().toString(), 
 													mLatitudeText.getText().toString(), 
 													mLongitudeText.getText().toString(), 
