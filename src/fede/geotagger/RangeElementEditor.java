@@ -12,11 +12,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 public class RangeElementEditor extends Activity {
-	static final private int MENU_OK = Menu.FIRST;
-	static final private int MENU_CANCEL = Menu.FIRST + 1;
+	static final private int MENU_VIEW_POSITIONS = Menu.FIRST;
+	static final private int MENU_VIEW_RANGES = Menu.FIRST + 1;
 	
 	static final private int NEW_POSITION_ACTION = 1;
 	static final private int CHOOSE_POSITION_ACTION = 2;
@@ -26,26 +25,32 @@ public class RangeElementEditor extends Activity {
 	private GeoDbAdapter mDbHelper;
 	private Long mPositionId;
 	private Long mRangeRowId;
-	private TextView mChoosenPosition;
+	private PositionListElem mChoosenPosition;
+	private boolean mFromMain;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.range_edit);
 		
-		mChoosenPosition = (TextView) findViewById(R.id.ChoosenPosition);
+		mChoosenPosition = (PositionListElem) findViewById(R.id.ChoosenPositionElem);
 		mFromRange = (EditText) findViewById(R.id.FromEditText);
 		mToRange = (EditText) findViewById(R.id.ToEditText);
 		
 		mDbHelper = new GeoDbAdapter(this);
         mDbHelper.open();
 		
-		Bundle extras = getIntent().getExtras();            
+        Intent i = getIntent();
+        mFromMain = (i.getAction() == "android.intent.action.MAIN");
+        
+		Bundle extras = i.getExtras();            
 		mRangeRowId = extras != null ? extras.getLong(GeoDbAdapter.ROW_ID) 
 		        : null;
 		
 		populateFields();
 	
+		
+		// BUTTONS
 		Button choosePosButton = (Button) findViewById(R.id.GetPositionButton);
 		choosePosButton.setOnClickListener(new View.OnClickListener(){
 			public void onClick(View view){
@@ -59,47 +64,62 @@ public class RangeElementEditor extends Activity {
 				Intent i = new Intent(RangeElementEditor.this, PositionEditor.class);
 		        startActivityForResult(i, NEW_POSITION_ACTION);
 			}});
+		
+		Button autoSetNewPosButton = (Button) findViewById(R.id.FastAddNewPositionButton);
+		autoSetNewPosButton.setOnClickListener(new View.OnClickListener(){
+			public void onClick(View view){
+				autoAddNewPosition();
+				populatePosition();
+				finalizeRange();
+			}});
 	}
 
+	private void autoAddNewPosition(){
+		// TODO get latitude longitude
+		mPositionId = mDbHelper.addPosition("Name", "Latitude", "Longitude", "Altitude");
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		
 		int groupId = 0;
-		int menuItemId = MENU_OK;
+		int menuItemId = MENU_VIEW_POSITIONS;
 		int menuItemOrder = Menu.NONE;	 
-		int menuItemText = R.string.ok_name;
+		int menuItemText = R.string.positions_name;
 
-		MenuItem okItem = menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
+		menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
 		
 		groupId = 0;
-		menuItemId = MENU_CANCEL;
+		menuItemId = MENU_VIEW_RANGES;
 		menuItemOrder = Menu.NONE;	 
-		menuItemText = R.string.cancel_name;
+		menuItemText = R.string.ranges_name;
 		
-		MenuItem cancelItem = menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
+		menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
 		
 		return true;
 	}
 
 	private void populateFields(){
-		if(mRangeRowId == null)
+		if(mRangeRowId == null){	// its a new record. Try to make the user's life easier
+			Long newMaxRange = mDbHelper.getMaxEndRange() + 1;
+			mFromRange.setText(newMaxRange.toString());
 			return;
+		}
 		Cursor myRange = mDbHelper.getRange(mRangeRowId);
         startManagingCursor(myRange);
         mFromRange.setText(myRange.getString(GeoDbAdapter.START_RANGE_COLUMN));
         mToRange.setText(myRange.getString(GeoDbAdapter.END_RANGE_COLUMN));
         mPositionId = myRange.getLong(GeoDbAdapter.POSITION_ID_COLUMN);
-        populatePositionName();        
+        populatePosition();        
 	}
 	
-	private void populatePositionName(){
+	private void populatePosition(){
 		if(mPositionId == null){
 			return;
 		}
-		Cursor choosenPosition = mDbHelper.getPosition(mPositionId.longValue());
-		startManagingCursor(choosenPosition);
-        mChoosenPosition.setText(choosenPosition.getString(GeoDbAdapter.POSITION_NAME_COLUMN));
+		Position pos = mDbHelper.getPositionObj(mPositionId.longValue());
+        mChoosenPosition.setValues(pos.getName(), pos.getLatitude(), pos.getLongitude());
 	}
 	
 	private void showErrorDialog(){
@@ -110,6 +130,7 @@ public class RangeElementEditor extends Activity {
 		d.setContentView(R.layout.text_dialog);
 		d.show();
 	}
+	
 	
 	private boolean checkAndAddRange(){
 		if(mPositionId == 0){
@@ -134,6 +155,18 @@ public class RangeElementEditor extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		super.onOptionsItemSelected(item);
 		switch(item.getItemId()){
+			case MENU_VIEW_POSITIONS:{
+				Intent i = new Intent(this, PositionListModifier.class);
+		        startActivity(i);
+			break;
+			}
+			case MENU_VIEW_RANGES:{
+				Intent i = new Intent(this, RangeList.class);
+		        startActivity(i);
+		    break;
+			}
+				
+		/*
 			case MENU_OK:
 				if(checkAndAddRange()){
 	                setResult(RESULT_OK);
@@ -146,10 +179,22 @@ public class RangeElementEditor extends Activity {
 			case MENU_CANCEL:
 				setResult(Activity.RESULT_CANCELED);
 				finish();	
-			return true;
+			return true;*/
 		}
 	
 		return true;
+	}
+	
+	private void finalizeRange(){
+		if(checkAndAddRange()){
+			if(mRangeRowId == null){	// Coming here from the main screen
+				Intent i = new Intent(this, RangeElementEditor.class);
+		        startActivity(i);
+			}else{						// Coming here from range list
+				setResult(RESULT_OK);
+				finish();
+			}
+		}
 	}
 	
     @Override
@@ -160,7 +205,7 @@ public class RangeElementEditor extends Activity {
 	        case NEW_POSITION_ACTION:
 	        case CHOOSE_POSITION_ACTION:
 	            mPositionId = extras.getLong(GeoDbAdapter.POSITION_ID_KEY);
-	            populatePositionName();
+	            populatePosition();
 	            break;
         }
     }

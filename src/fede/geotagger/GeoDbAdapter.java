@@ -132,6 +132,20 @@ public class GeoDbAdapter {
     return res;
   }
   
+  public Position getPositionObj(long _rowIndex){
+	  Cursor res = getPosition(_rowIndex);
+	  if(res == null){
+		  return null;
+	  }
+	  Position pos = new Position(
+			  res.getString(POSITION_NAME_COLUMN),
+			  res.getString(POSITION_LATITUDE_COLUMN),
+			  res.getString(POSITION_LONGITUDE_COLUMN),
+			  res.getString(POSITION_ALTITUDE_COLUMN));			  
+			  
+	return pos;
+  }
+  
   	  
   
   
@@ -187,7 +201,16 @@ public class GeoDbAdapter {
     return res;
   }
   
-  	  
+  public Long getMaxEndRange() {
+	    String query = "select max(" + END_RANGE_KEY + ") from " + RANGE_TABLE;
+	    Cursor c = db.rawQuery(query, null); 
+	    Long res = new Long(0);
+	    if(c != null){
+	    	c.moveToFirst();
+	     	res = c.getLong(1);
+	    }
+	    return res;
+  }	  
   
   
   public int updateRange(long _rowIndex, int fromRange, int toRange, int positionId) {

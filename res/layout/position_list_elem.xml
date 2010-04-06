@@ -2,7 +2,7 @@
 <TableLayout android:id="@+id/PositionElemTable" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
 	<TableRow>
         <TextView
-            android:text="@string/positon_name_name"
+            android:text="@string/name_name"
             android:padding="3dip" />
         <TextView
         	android:id="@+id/position_elem_name" />

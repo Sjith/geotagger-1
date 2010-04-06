@@ -7,6 +7,7 @@
 <string name="to_name">To</string>
 <string name="choose_position_name">Choose Position</string>
 <string name="add_new_position_name">Add New Position</string>
+<string name="fast_add_new_position_name">Auto Set Position</string>
 <string name="ok_name">Ok</string>
 <string name="cancel_name">Cancel</string>
 <string name="add_name">Add</string>
@@ -19,5 +20,8 @@
 <string name="altitude_name">Altitude</string>
 <string name="positon_name_name">Position Name</string>
 <string name="update_position_name">Update Position</string>
-<string name="positions_name">Available Positions</string>
+<string name="positions_name">Positions</string>
+<string name="are_u_sure_name">Are you sure of your choice?</string>
+<string name="u_chose_position_name">Choose</string>
+<string name="name_name">Name</string>
 </resources>

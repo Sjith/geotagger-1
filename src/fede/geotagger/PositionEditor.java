@@ -75,14 +75,14 @@ public class PositionEditor extends Activity {
 		int menuItemOrder = Menu.NONE;	 
 		int menuItemText = R.string.ok_name;
 
-		MenuItem okItem = menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
+		menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
 		
 		groupId = 0;
 		menuItemId = MENU_CANCEL;
 		menuItemOrder = Menu.NONE;	 
 		menuItemText = R.string.cancel_name;
 		
-		MenuItem cancelItem = menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
+		menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
 		
 		return true;
 	}

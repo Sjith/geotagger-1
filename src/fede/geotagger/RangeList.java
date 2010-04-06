@@ -10,17 +10,15 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
-public class GeoTagger extends ListActivity {
+public class RangeList extends ListActivity {
 
 	private GeoDbAdapter mDbHelper;
 	private long mItemId;
 	
-	static final private int MENU_ADD = Menu.FIRST;
-	static final private int MENU_EDIT = Menu.FIRST + 1;
-	static final private int MENU_DEL = Menu.FIRST + 2;
+	static final private int MENU_EDIT = Menu.FIRST;
+	static final private int MENU_DEL = Menu.FIRST + 1;
 	
-    private static final int RANGE_CREATE=0;
-    private static final int RANGE_EDIT=1;
+    private static final int RANGE_EDIT=0;
 	
 	
     /** Called when the activity is first created. */
@@ -43,26 +41,20 @@ public class GeoTagger extends ListActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		
+		
 		int groupId = 0;
-		int menuItemId = MENU_ADD;
+		int menuItemId = MENU_EDIT;
 		int menuItemOrder = Menu.NONE;	 
-		int menuItemText = R.string.add_name;
-
-		MenuItem okItem = menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
+		int menuItemText = R.string.edit_name;
 		
-		groupId = 0;
-		menuItemId = MENU_EDIT;
-		menuItemOrder = Menu.NONE;	 
-		menuItemText = R.string.edit_name;
-		
-		MenuItem editItem = menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
+		menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
 		
 		groupId = 0;
 		menuItemId = MENU_DEL;
 		menuItemOrder = Menu.NONE;	 
 		menuItemText = R.string.cancel_name;
 		
-		MenuItem cancelItem = menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
+		menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
 		
 		return true;
 	}
@@ -70,9 +62,7 @@ public class GeoTagger extends ListActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch(item.getItemId()) {
-        case MENU_ADD:
-            createRange();
-            return true;
+
 		case MENU_EDIT:
 	        editRange();
 	        return true;
@@ -87,11 +77,7 @@ public class GeoTagger extends ListActivity {
         startActivityForResult(i, RANGE_EDIT);
 	}
 	
-	
-	private void createRange(){
-		Intent i = new Intent(this, RangeElementEditor.class);
-        startActivityForResult(i, RANGE_CREATE);
-	}
+
 	
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
