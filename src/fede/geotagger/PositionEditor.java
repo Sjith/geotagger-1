@@ -62,16 +62,37 @@ public class PositionEditor extends Activity {
 
 		Button okButton = (Button) findViewById(R.id.PositionOKButton);
 		okButton.setOnClickListener(new View.OnClickListener(){
-			public void onClick(View view){				
+			public void onClick(View view){
+				if(mPositionId == null){
 				mPositionId = mDbHelper.addPosition(mPositionName.getText().toString(), 
 													mLatitudeText.getText().toString(), 
 													mLongitudeText.getText().toString(), 
 													mAltitudeText.getText().toString());
+				}else{
+					mDbHelper.updatePosition(mPositionId, 
+											 mPositionName.getText().toString(), 
+											 mLatitudeText.getText().toString(), 
+											 mLongitudeText.getText().toString(), 
+								   			 mAltitudeText.getText().toString());
+				}
+				Intent result = new Intent();
+				result.putExtra(GeoDbAdapter.POSITION_ID_KEY, mPositionId);
+				setResult(RESULT_OK, result);
+				finish();
+				
+			}});
+		
+		Button cancelButton = (Button) findViewById(R.id.PositionCancelButton); 
+		cancelButton.setOnClickListener(new View.OnClickListener(){
+			public void onClick(View view){				
+				setResult(RESULT_CANCELED);
+				finish();	
 				
 			}});
 		
 	}
 
+	/*
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
@@ -99,19 +120,16 @@ public class PositionEditor extends Activity {
 		super.onOptionsItemSelected(item);
 		switch(item.getItemId()){
 			case MENU_OK:
-				Intent result = new Intent();
-				result.putExtra(GeoDbAdapter.POSITION_ID_KEY, mPositionId);
-				setResult(RESULT_OK, result);
-				finish();	
+					
 			return true;			
 			case MENU_CANCEL:
-				setResult(RESULT_CANCELED);
-				finish();	
+
 			return true;
 		}
 	
 		return true;
 	}
+	*/
 	
 	private void populateFields(){
 		if(mPositionId == null){

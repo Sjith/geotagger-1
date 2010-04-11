@@ -73,20 +73,19 @@ public class PositionListModifier extends PositionList {
 	
 	
 	@Override public boolean onContextItemSelected(MenuItem item) {
-		super.onContextItemSelected(item);		
+		super.onContextItemSelected(item);
+		
+		AdapterView.AdapterContextMenuInfo menuInfo; 
+		menuInfo =(AdapterView.AdapterContextMenuInfo)item.getMenuInfo(); 
+		Long elemIndex = new Long(menuInfo.id);
+		
 		switch (item.getItemId()) { 
 			case (MENU_DEL): {
-				AdapterView.AdapterContextMenuInfo menuInfo; 
-				menuInfo =(AdapterView.AdapterContextMenuInfo)item.getMenuInfo(); 
-				Long elemIndex = new Long(menuInfo.id);
 				deletePosition(elemIndex); 
 				mPositionsAdapter.notifyDataSetChanged();
 				return true;
 			}
 			case (MENU_EDIT): {
-				AdapterView.AdapterContextMenuInfo menuInfo; 
-				menuInfo =(AdapterView.AdapterContextMenuInfo)item.getMenuInfo(); 
-				Long elemIndex = new Long(menuInfo.id);
 				editPosition(elemIndex); 
 				return true;
 			}
