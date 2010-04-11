@@ -13,7 +13,7 @@ import android.util.Log;
 public class GeoDbAdapter {
   private static final String DATABASE_NAME = "geoDb.db";
   
-  private static final int DATABASE_VERSION = 1;
+  private static final int DATABASE_VERSION = 2;
  
   
   
@@ -129,6 +129,7 @@ public class GeoDbAdapter {
     if(res != null){
     	res.moveToFirst();
     }
+    
     return res;
   }
   
@@ -137,11 +138,15 @@ public class GeoDbAdapter {
 	  if(res == null){
 		  return null;
 	  }
+	  res.moveToFirst();
+	  	  
 	  Position pos = new Position(
 			  res.getString(POSITION_NAME_COLUMN),
 			  res.getString(POSITION_LATITUDE_COLUMN),
 			  res.getString(POSITION_LONGITUDE_COLUMN),
-			  res.getString(POSITION_ALTITUDE_COLUMN));			  
+			  res.getString(POSITION_ALTITUDE_COLUMN));	
+	  
+	  res.close();
 			  
 	return pos;
   }
@@ -202,7 +207,8 @@ public class GeoDbAdapter {
   }
   
   public Long getMaxEndRange() {
-	    String query = "select max(" + END_RANGE_KEY + ") from " + RANGE_TABLE;
+	    String query = "select 1 as _id, " +	// since cursors need a column named _id, I fool it by putting this fake column
+	    		"max(" + END_RANGE_KEY + ") as maxRange from " + RANGE_TABLE;
 	    Cursor c = db.rawQuery(query, null); 
 	    Long res = new Long(0);
 	    if(c != null){

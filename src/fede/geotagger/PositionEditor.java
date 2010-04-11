@@ -2,6 +2,7 @@ package fede.geotagger;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,6 +40,11 @@ public class PositionEditor extends Activity {
 		mDbHelper = new GeoDbAdapter(this);
         mDbHelper.open();
 		
+        Bundle extras = getIntent().getExtras();            
+		mPositionId = extras != null ? extras.getLong(GeoDbAdapter.POSITION_ROW_ID) 
+		        : null;
+		
+		populateFields();
 		
 		Button updatePosButton = (Button) findViewById(R.id.UpdatePositionButton);
 		updatePosButton.setOnClickListener(new View.OnClickListener(){
@@ -107,6 +113,17 @@ public class PositionEditor extends Activity {
 		return true;
 	}
 	
+	private void populateFields(){
+		if(mPositionId == null){
+			return;
+		}
+		Position pos = mDbHelper.getPositionObj(mPositionId);
+		mPositionName.setText(pos.getName());
+		mLatitudeText.setText(pos.getLatitude());
+		mLongitudeText.setText(pos.getLongitude());
+		mAltitudeText.setText(pos.getAltitude());
+	}
+}
 	
 
-}
+

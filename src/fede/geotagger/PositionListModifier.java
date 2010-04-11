@@ -3,9 +3,11 @@ package fede.geotagger;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
@@ -16,6 +18,8 @@ public class PositionListModifier extends PositionList {
 	
     private static final int POSITION_CREATE =0;
     private static final int POSITION_EDIT = 1;
+    
+    private SimpleCursorAdapter mPositionsAdapter;
 	
 	
     /** Called when the activity is first created. */
@@ -23,6 +27,7 @@ public class PositionListModifier extends PositionList {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         registerForContextMenu(getListView());
+        fillData();
     }
     
 	@Override
@@ -30,6 +35,7 @@ public class PositionListModifier extends PositionList {
 		mPositionId = id;
 	}
     
+	// 			MENUS
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
@@ -39,23 +45,19 @@ public class PositionListModifier extends PositionList {
 		int menuItemOrder = Menu.NONE;	 
 		int menuItemText = R.string.add_name;
 
-		menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
-		
-		groupId = 0;
-		menuItemId = MENU_EDIT;
-		menuItemOrder = Menu.NONE;	 
-		menuItemText = R.string.edit_name;
-		
-		menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
-		
-		groupId = 0;
-		menuItemId = MENU_DEL;
-		menuItemOrder = Menu.NONE;	 
-		menuItemText = R.string.cancel_name;
-		
-		menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
-		
+		menu.add(groupId, menuItemId, menuItemOrder, menuItemText);		
 		return true;
+	}
+	
+	@Override public void onCreateContextMenu(ContextMenu menu,
+												View v,
+												ContextMenu.
+												ContextMenuInfo menuInfo) 
+	{ 
+		super.onCreateContextMenu(menu, v, menuInfo);
+		menu.setHeaderTitle("Selected To Do Item"); 
+		menu.add(0, MENU_EDIT, Menu.NONE, R.string.edit_name);
+		menu.add(0, MENU_DEL, Menu.NONE, R.string.cancel_name);
 	}
 	
 	@Override
@@ -64,20 +66,37 @@ public class PositionListModifier extends PositionList {
         case MENU_ADD:
         	addPosition();
             return true;
-		case MENU_EDIT:
-			editPosition();
-	        return true;
-		case MENU_DEL:
-			deletePosition();
-			return true;
-	    }
-		
+	    }		
 		return super.onOptionsItemSelected(item);
 	}
 	
-	private void editPosition(){
+	
+	
+	@Override public boolean onContextItemSelected(MenuItem item) {
+		super.onContextItemSelected(item);		
+		switch (item.getItemId()) { 
+			case (MENU_DEL): {
+				AdapterView.AdapterContextMenuInfo menuInfo; 
+				menuInfo =(AdapterView.AdapterContextMenuInfo)item.getMenuInfo(); 
+				Long elemIndex = new Long(menuInfo.id);
+				deletePosition(elemIndex); 
+				mPositionsAdapter.notifyDataSetChanged();
+				return true;
+			}
+			case (MENU_EDIT): {
+				AdapterView.AdapterContextMenuInfo menuInfo; 
+				menuInfo =(AdapterView.AdapterContextMenuInfo)item.getMenuInfo(); 
+				Long elemIndex = new Long(menuInfo.id);
+				editPosition(elemIndex); 
+				return true;
+			}
+		}
+	return false;
+	}
+	
+	private void editPosition(Long positionId){
 		Intent i = new Intent(this, PositionEditor.class);
-		i.putExtra(GeoDbAdapter.POSITION_ROW_ID, mPositionId);
+		i.putExtra(GeoDbAdapter.POSITION_ROW_ID, positionId);
         startActivityForResult(i, POSITION_EDIT);
 	}
 	
@@ -92,11 +111,13 @@ public class PositionListModifier extends PositionList {
 		return true;
 	}
 	
-	private void deletePosition(){
-		if(isSureToDelete() && mPositionId != null){
-			mDbHelper.removePosition(mPositionId);
+	private void deletePosition(Long positionId){
+		if(isSureToDelete()){
+			mDbHelper.removePosition(positionId);
 		}
 	}
+	
+
 	
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -105,7 +126,7 @@ public class PositionListModifier extends PositionList {
     }
 	
     private void fillData(){
-    	Cursor positionCursor = mDbHelper.getAllRanges();
+    	Cursor positionCursor = mDbHelper.getAllPositions();
     	startManagingCursor(positionCursor);
     	// Create an array to specify the fields we want to display in the list (only TITLE)
         String[] from = new String[]{GeoDbAdapter.POSITION_NAME_KEY, 
@@ -118,8 +139,8 @@ public class PositionListModifier extends PositionList {
         					 R.id.position_elem_longitude};
         
         // Now create a simple cursor adapter and set it to display
-        SimpleCursorAdapter positions = 
+        mPositionsAdapter = 
         	    new SimpleCursorAdapter(this, R.layout.position_list_elem, positionCursor, from, to);
-        setListAdapter(positions);
+        setListAdapter(mPositionsAdapter);
     }
 }
