@@ -107,6 +107,9 @@ public class RangeElementEditor extends Activity {
 			return;
 		}
 		Cursor myRange = mDbHelper.getRange(mRangeRowId);
+		if(myRange == null){
+			return;
+		}
         startManagingCursor(myRange);
         mFromRange.setText(myRange.getString(GeoDbAdapter.START_RANGE_COLUMN));
         mToRange.setText(myRange.getString(GeoDbAdapter.END_RANGE_COLUMN));
@@ -165,21 +168,6 @@ public class RangeElementEditor extends Activity {
 		        startActivity(i);
 		    break;
 			}
-				
-		/*
-			case MENU_OK:
-				if(checkAndAddRange()){
-	                setResult(RESULT_OK);
-	                finish();
-				}else{
-					setResult(Activity.RESULT_CANCELED);
-					finish();
-				}
-			return true;			
-			case MENU_CANCEL:
-				setResult(Activity.RESULT_CANCELED);
-				finish();	
-			return true;*/
 		}
 	
 		return true;

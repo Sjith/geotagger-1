@@ -8,13 +8,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 public class PositionListModifier extends PositionList {
 	static final private int MENU_ADD = Menu.FIRST;
 	static final private int MENU_EDIT = Menu.FIRST + 1;
 	static final private int MENU_DEL = Menu.FIRST + 2;
+	static final private int MENU_NONE = Menu.FIRST + 3;
 	
     private static final int POSITION_CREATE =0;
     private static final int POSITION_EDIT = 1;
@@ -30,10 +30,7 @@ public class PositionListModifier extends PositionList {
         fillData();
     }
     
-	@Override
-	protected void onListItemClick(ListView l, View v, int position, long id) {
-		mPositionId = id;
-	}
+
     
 	// 			MENUS
 	@Override
@@ -55,9 +52,10 @@ public class PositionListModifier extends PositionList {
 												ContextMenuInfo menuInfo) 
 	{ 
 		super.onCreateContextMenu(menu, v, menuInfo);
-		menu.setHeaderTitle("Selected To Do Item"); 
+		menu.setHeaderTitle(getString(R.string.selected_position_name)); 
 		menu.add(0, MENU_EDIT, Menu.NONE, R.string.edit_name);
 		menu.add(0, MENU_DEL, Menu.NONE, R.string.cancel_name);
+		menu.add(0, MENU_NONE, Menu.NONE, R.string.back_name);
 	}
 	
 	@Override
@@ -82,12 +80,15 @@ public class PositionListModifier extends PositionList {
 		switch (item.getItemId()) { 
 			case (MENU_DEL): {
 				deletePosition(elemIndex); 
-				mPositionsAdapter.notifyDataSetChanged();
+				fillData();
 				return true;
 			}
 			case (MENU_EDIT): {
 				editPosition(elemIndex); 
 				return true;
+			}
+			case (MENU_NONE): {
+				// nothing
 			}
 		}
 	return false;

@@ -4,19 +4,21 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ListView;
+import android.widget.AdapterView;
 import android.widget.SimpleCursorAdapter;
 
 public class RangeList extends ListActivity {
 
 	private GeoDbAdapter mDbHelper;
-	private long mItemId;
+
 	
 	static final private int MENU_EDIT = Menu.FIRST;
 	static final private int MENU_DEL = Menu.FIRST + 1;
+	static final private int MENU_NONE = Menu.FIRST + 2;
 	
     private static final int RANGE_EDIT=0;
 	
@@ -32,49 +34,50 @@ public class RangeList extends ListActivity {
         registerForContextMenu(getListView());
     }
     
-	@Override
-	protected void onListItemClick(ListView l, View v, int position, long id) {
-		mItemId = id;
+    @Override public void onCreateContextMenu(ContextMenu menu,
+			View v,
+			ContextMenu.
+			ContextMenuInfo menuInfo) 
+    { 
+    	super.onCreateContextMenu(menu, v, menuInfo);
+    	menu.setHeaderTitle(getString(R.string.selected_range_name)); 
+    	menu.add(0, MENU_EDIT, Menu.NONE, R.string.edit_name);
+    	menu.add(0, MENU_DEL, Menu.NONE, R.string.cancel_name);
+    	menu.add(0, MENU_NONE, Menu.NONE, R.string.back_name);
+    }
+    
+    @Override public boolean onContextItemSelected(MenuItem item) {
+		super.onContextItemSelected(item);
+		
+		AdapterView.AdapterContextMenuInfo menuInfo; 
+		menuInfo =(AdapterView.AdapterContextMenuInfo)item.getMenuInfo(); 
+		Long elemIndex = new Long(menuInfo.id);
+		
+		switch (item.getItemId()) { 
+			case (MENU_DEL): {
+				deleteRange(elemIndex); 
+				fillData();
+				return true;
+			}
+			case (MENU_EDIT): {
+				editRange(elemIndex); 
+				return true;
+			}
+			case (MENU_NONE): {
+				// nothing
+			}
+		}
+	return false;
 	}
     
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		
-		
-		int groupId = 0;
-		int menuItemId = MENU_EDIT;
-		int menuItemOrder = Menu.NONE;	 
-		int menuItemText = R.string.edit_name;
-		
-		menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
-		
-		groupId = 0;
-		menuItemId = MENU_DEL;
-		menuItemOrder = Menu.NONE;	 
-		menuItemText = R.string.cancel_name;
-		
-		menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
-		
-		return true;
-	}
-	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch(item.getItemId()) {
-
-		case MENU_EDIT:
-	        editRange();
-	        return true;
-	    }
-		
-		return super.onOptionsItemSelected(item);
-	}
-	
-	private void editRange(){
+	private void editRange(Long itemId){
 		Intent i = new Intent(this, RangeElementEditor.class);
-		i.putExtra(GeoDbAdapter.ROW_ID, mItemId);
+		i.putExtra(GeoDbAdapter.ROW_ID, itemId);
         startActivityForResult(i, RANGE_EDIT);
+	}
+	
+	private void deleteRange(Long itemId){
+		mDbHelper.removeRange(itemId);
 	}
 	
 

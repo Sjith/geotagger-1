@@ -24,4 +24,7 @@
 <string name="are_u_sure_name">Are you sure of your choice?</string>
 <string name="u_chose_position_name">Choose</string>
 <string name="name_name">Name</string>
+<string name="back_name">Back</string>
+<string name="selected_range_name">Selected range</string>
+<string name="selected_position_name">Selected position</string>
 </resources>

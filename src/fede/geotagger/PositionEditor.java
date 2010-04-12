@@ -2,10 +2,8 @@ package fede.geotagger;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -92,44 +90,7 @@ public class PositionEditor extends Activity {
 		
 	}
 
-	/*
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		
-		int groupId = 0;
-		int menuItemId = MENU_OK;
-		int menuItemOrder = Menu.NONE;	 
-		int menuItemText = R.string.ok_name;
-
-		menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
-		
-		groupId = 0;
-		menuItemId = MENU_CANCEL;
-		menuItemOrder = Menu.NONE;	 
-		menuItemText = R.string.cancel_name;
-		
-		menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
-		
-		return true;
-	}
-
 	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		super.onOptionsItemSelected(item);
-		switch(item.getItemId()){
-			case MENU_OK:
-					
-			return true;			
-			case MENU_CANCEL:
-
-			return true;
-		}
-	
-		return true;
-	}
-	*/
 	
 	private void populateFields(){
 		if(mPositionId == null){
