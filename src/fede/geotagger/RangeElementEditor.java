@@ -74,7 +74,7 @@ public class RangeElementEditor extends Activity {
 			}});
 		
 		Button okButton = (Button) findViewById(R.id.RangeElemOkButton);
-		autoSetNewPosButton.setOnClickListener(new View.OnClickListener(){
+		okButton.setOnClickListener(new View.OnClickListener(){
 			public void onClick(View view){
 				finalizeRange();
 			}});
@@ -142,7 +142,7 @@ public class RangeElementEditor extends Activity {
 	
 	
 	private boolean checkAndAddRange(){
-		if(mPositionId == 0){
+		if(mPositionId == null || mPositionId == 0){
 			showErrorDialog();	
 			return false;
 		}
