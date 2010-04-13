@@ -80,6 +80,7 @@ public class PositionListModifier extends PositionList {
 		switch (item.getItemId()) { 
 			case (MENU_DEL): {
 				deletePosition(elemIndex); 
+				// TODO show dialog couldnt delete position
 				fillData();
 				return true;
 			}
@@ -113,7 +114,9 @@ public class PositionListModifier extends PositionList {
 	
 	private void deletePosition(Long positionId){
 		if(isSureToDelete()){
-			mDbHelper.removePosition(positionId);
+			if(mDbHelper.removePosition(positionId) == false){ // position still in use, cant be deleted
+				// TODO dialog position cant be deleted
+			}
 		}
 	}
 	

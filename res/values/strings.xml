@@ -27,4 +27,5 @@
 <string name="back_name">Back</string>
 <string name="selected_range_name">Selected range</string>
 <string name="selected_position_name">Selected position</string>
+<string name="invalid_range_name">Invalid range name</string>
 </resources>

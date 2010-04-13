@@ -106,10 +106,12 @@ public class RangeElementEditor extends Activity {
 		return true;
 	}
 
-	private void populateFields(){
+	private void populateFields()
+	{
 		if(mRangeRowId == null){	// its a new record. Try to make the user's life easier
 			Long newMaxRange = mDbHelper.getMaxEndRange() + 1;
 			mFromRange.setText(newMaxRange.toString());
+			mToRange.setText(newMaxRange.toString());
 			return;
 		}
 		Cursor myRange = mDbHelper.getRange(mRangeRowId);
@@ -131,24 +133,57 @@ public class RangeElementEditor extends Activity {
         mChoosenPosition.setValues(pos.getName(), pos.getLatitude(), pos.getLongitude());
 	}
 	
-	private void showErrorDialog(){
+	private void showErrorDialog(String errorString){
 		Dialog d = new Dialog(RangeElementEditor.this);
 		Window window = d.getWindow();
 		window.setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND, WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
-		d.setTitle(R.string.error_name);
+		d.setTitle(errorString);
 		d.setContentView(R.layout.text_dialog);
 		d.show();
 	}
 	
+	private boolean checkRanges()
+	{
+		Long fromRange = Long.parseLong(mFromRange.getText().toString());
+		Long toRange = Long.parseLong(mToRange.getText().toString());
+		
+		if(fromRange == 0 || toRange == 0){
+			showErrorDialog(getString(R.string.invalid_range_name));
+			return false;
+		}
+		
+		if(fromRange > toRange){
+			showErrorDialog(getString(R.string.invalid_range_name));
+			return false;
+		}
+		
+		if(mDbHelper.goodRangeBound(fromRange) == false){
+			showErrorDialog(getString(R.string.invalid_range_name));	
+			return false;
+		}
+		
+		if(mDbHelper.goodRangeBound(toRange) == false){
+			showErrorDialog(getString(R.string.invalid_range_name));	
+			return false;
+		}
+		
+		return true;
+	}
 	
 	private boolean checkAndAddRange(){
 		if(mPositionId == null || mPositionId == 0){
-			showErrorDialog();	
+			showErrorDialog(getString(R.string.error_name));	
+			return false;
+		}
+		
+		if(checkRanges() == false){
 			return false;
 		}
 		
 		Long fromRange = Long.parseLong(mFromRange.getText().toString());
 		Long toRange = Long.parseLong(mToRange.getText().toString());
+		
+	
 		// TODO Check Ranges
 		// TODO Check Action
 		

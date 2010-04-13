@@ -14,6 +14,7 @@ public class GeoDbAdapter {
   private static final String DATABASE_NAME = "geoDb.db";
   
   private static final int DATABASE_VERSION = 2;
+  private static final String TAG = "DbHelper";
  
   
   
@@ -99,8 +100,13 @@ public class GeoDbAdapter {
   }
   
 
-  public boolean removePosition(long _rowIndex) {
-    return db.delete(POSITION_TABLE, ROW_ID + "=" + _rowIndex, null) > 0;
+  public boolean removePosition(Long _rowIndex) {
+	if(canDeletePosition(_rowIndex)){
+		return db.delete(POSITION_TABLE, ROW_ID + "=" + _rowIndex, null) > 0;
+	}else{
+		Log.d(TAG, "Position" + _rowIndex.toString() + "not deletable");
+		return false;
+	}
   }
 
    
@@ -139,16 +145,18 @@ public class GeoDbAdapter {
 		  return null;
 	  }
 	  res.moveToFirst();
-	  	  
-	  Position pos = new Position(
+	  
+	  if(res != null){
+		  Position pos = new Position(
 			  res.getString(POSITION_NAME_COLUMN),
 			  res.getString(POSITION_LATITUDE_COLUMN),
 			  res.getString(POSITION_LONGITUDE_COLUMN),
 			  res.getString(POSITION_ALTITUDE_COLUMN));	
 	  
-	  res.close();
-			  
-	return pos;
+		  res.close();			
+		  return pos;
+	  }
+	  return new Position();
   }
   
   	  
@@ -165,6 +173,17 @@ public class GeoDbAdapter {
 
    // TODO Fill in the ContentValue based on the new object
     return db.update(POSITION_TABLE, contentValues, where, null);
+  }
+  
+  private boolean canDeletePosition(long positionId){
+
+	    Cursor res = db.query(RANGE_TABLE, new String[] {ROW_ID, START_RANGE_KEY}, POSITION_ID_KEY + " = " + positionId, 
+	    		null, null, null, null);
+	    
+	    if(res != null){
+	    	res.moveToFirst();
+	    }
+	    return (res == null);
   }
   
   
@@ -219,6 +238,18 @@ public class GeoDbAdapter {
   }	  
   
   
+  // checks the value is already in a stored range
+  public boolean goodRangeBound(Long bound){
+	  Cursor res = db.query(RANGE_TABLE, new String[] {ROW_ID, START_RANGE_KEY}, 
+			  								START_RANGE_KEY + " < " + bound.toString() + " and " + END_RANGE_KEY + " > " + bound.toString(), 			
+			  								null, null, null, null);
+	    
+	    if(res != null){
+	    	res.moveToFirst();
+	    }
+	    return (res == null);
+  }
+  
   public int updateRange(long _rowIndex, int fromRange, int toRange, int positionId) {
     String where = ROW_ID + " = " + _rowIndex;
     ContentValues contentValues = new ContentValues();
@@ -230,7 +261,7 @@ public class GeoDbAdapter {
     return db.update(RANGE_TABLE, contentValues, where, null);
   }
   
-  
+
 
   private static class myDbHelper extends SQLiteOpenHelper {
 

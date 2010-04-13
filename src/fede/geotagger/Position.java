@@ -33,6 +33,14 @@ public class Position {
 		this.longitude = longitude;
 		this.altitude = altitude;
 	}
+	
+	public Position() {
+		this.name = "";
+		this.latitude = "";
+		this.longitude = "";
+		this.altitude = "";
+	}
+	
 	private String name;
 	private String latitude;
 	private String longitude;

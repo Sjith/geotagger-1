@@ -1,9 +1,11 @@
-- check cursor results
+- sqlite optimizations, indexes
 - position cleaner
 - range cleaner
 - context menu for range list
+- auto generate valid position name
 - position date option
 - fill the correct coordinates
 - export to xml
 - python on pc app
 - make the gui nicer
+
