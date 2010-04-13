@@ -72,6 +72,12 @@ public class RangeElementEditor extends Activity {
 				populatePosition();
 				finalizeRange();
 			}});
+		
+		Button okButton = (Button) findViewById(R.id.RangeElemOkButton);
+		autoSetNewPosButton.setOnClickListener(new View.OnClickListener(){
+			public void onClick(View view){
+				finalizeRange();
+			}});
 	}
 
 	private void autoAddNewPosition(){

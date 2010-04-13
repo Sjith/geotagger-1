@@ -18,4 +18,5 @@
 
 <Button android:text="@string/add_new_position_name" android:id="@+id/AddNewPositionButton" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button></LinearLayout>
 <fede.geotagger.PositionListElem android:id="@+id/ChoosenPositionElem" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+<Button android:text="@string/ok_name" android:id="@+id/RangeElemOkButton" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
 </LinearLayout>
