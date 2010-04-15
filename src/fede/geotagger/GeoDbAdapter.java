@@ -242,7 +242,7 @@ public class GeoDbAdapter {
   // checks the value is already in a stored range
   public boolean goodRangeBound(Long bound)
   {
-	  String query = START_RANGE_KEY + " >= " + bound.toString() + " and " + END_RANGE_KEY + " > " + bound.toString();
+	  String query = START_RANGE_KEY + " <= " + bound.toString() + " and " + END_RANGE_KEY + " > " + bound.toString();
 	  Cursor res = db.query(RANGE_TABLE, new String[] {ROW_ID, START_RANGE_KEY}, 
 			  								query, 			
 			  								null, null, null, null);
