@@ -181,9 +181,10 @@ public class GeoDbAdapter {
 	    		null, null, null, null);
 	    
 	    if(res != null){
-	    	res.moveToFirst();
+	    	if(res.getCount() > 0)
+	    		return false;
 	    }
-	    return (res == null);
+	    return true;
   }
   
   
@@ -239,15 +240,20 @@ public class GeoDbAdapter {
   
   
   // checks the value is already in a stored range
-  public boolean goodRangeBound(Long bound){
+  public boolean goodRangeBound(Long bound)
+  {
+	  String query = START_RANGE_KEY + " >= " + bound.toString() + " and " + END_RANGE_KEY + " > " + bound.toString();
 	  Cursor res = db.query(RANGE_TABLE, new String[] {ROW_ID, START_RANGE_KEY}, 
-			  								START_RANGE_KEY + " < " + bound.toString() + " and " + END_RANGE_KEY + " > " + bound.toString(), 			
+			  								query, 			
 			  								null, null, null, null);
-	    
-	    if(res != null){
-	    	res.moveToFirst();
-	    }
-	    return (res == null);
+	  if(res == null)
+		  return true;
+	  
+	  if(res.getCount() > 0){
+		  return false;
+	  }
+	  
+	  return true;
   }
   
   public int updateRange(long _rowIndex, int fromRange, int toRange, int positionId) {

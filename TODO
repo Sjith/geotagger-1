@@ -1,4 +1,5 @@
 - sqlite optimizations, indexes
+- error dialog, must add cancel button
 - position cleaner
 - range cleaner
 - context menu for range list
