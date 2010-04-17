@@ -1,8 +1,12 @@
 package fede.geotagger;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnClickListener;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
@@ -82,7 +86,10 @@ public class RangeElementEditor extends Activity {
 
 	private void autoAddNewPosition(){
 		// TODO get latitude longitude
-		mPositionId = mDbHelper.addPosition("Name", "Latitude", "Longitude", "Altitude");
+		mPositionId = mDbHelper.addPosition(Position.buildPositionName(), 
+											"Latitude", 
+											"Longitude", 
+											"Altitude");
 	}
 	
 	@Override
@@ -133,20 +140,29 @@ public class RangeElementEditor extends Activity {
         mChoosenPosition.setValues(pos.getName(), pos.getLatitude(), pos.getLongitude());
 	}
 	
-	private void showErrorDialog(String errorString){
-		Dialog d = new Dialog(RangeElementEditor.this);
-		Window window = d.getWindow();
-		window.setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND, WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
-		d.setTitle(errorString);
-		d.setContentView(R.layout.text_dialog);
-		d.show();
+	private void showErrorDialog(String errorString)
+	{
+    	Context context = this; 
+    	String title = getString(R.string.invalid_range_name); 
+    	Position pos = mDbHelper.getPositionObj(mPositionId);
+    	if(pos == null){
+    		return;
+    	} 
+    	String button1String = getString(R.string.ok_name); 
+    	AlertDialog.Builder ad = new AlertDialog.Builder(context); 
+    	ad.setTitle(title); 
+    	ad.setMessage(errorString); 
+    	ad.setPositiveButton(button1String,
+    						 new OnClickListener() { 
+	    						public void onClick(DialogInterface dialog, int arg1) {
+	    							// do nothing
+	    						} });
+    	ad.show();
+    	return;    
 	}
 	
-	private boolean checkRanges()
-	{
-		Long fromRange = Long.parseLong(mFromRange.getText().toString());
-		Long toRange = Long.parseLong(mToRange.getText().toString());
-		
+	private boolean checkRanges(Long fromRange, Long toRange)
+	{	
 		if(fromRange == 0 || toRange == 0){
 			showErrorDialog(getString(R.string.invalid_range_name));
 			return false;
@@ -170,22 +186,22 @@ public class RangeElementEditor extends Activity {
 		return true;
 	}
 	
-	private boolean checkAndAddRange(){
+	private boolean checkAndAddRange()
+	{
 		if(mPositionId == null || mPositionId == 0){
 			showErrorDialog(getString(R.string.error_name));	
-			return false;
-		}
-		
-		if(checkRanges() == false){
 			return false;
 		}
 		
 		Long fromRange = Long.parseLong(mFromRange.getText().toString());
 		Long toRange = Long.parseLong(mToRange.getText().toString());
 		
-	
-		// TODO Check Ranges
-		// TODO Check Action
+		
+		if(checkRanges(fromRange, toRange) == false){
+			return false;
+		}
+		
+		
 		
 		if(mRangeRowId == null){
 			mDbHelper.addRange(fromRange.intValue(), toRange.intValue(), mPositionId.intValue());

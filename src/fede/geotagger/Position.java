@@ -1,6 +1,14 @@
 package fede.geotagger;
 
+import java.util.Date;
+
 public class Position {
+	public static String buildPositionName()
+	{
+		Date now = new Date();
+		return "Position-" + now.toString().substring(0, 16);		
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -32,6 +40,7 @@ public class Position {
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.altitude = altitude;
+		this.date = new Date();
 	}
 	
 	public Position() {
@@ -39,11 +48,13 @@ public class Position {
 		this.latitude = "";
 		this.longitude = "";
 		this.altitude = "";
+		this.date = new Date();
 	}
 	
 	private String name;
 	private String latitude;
 	private String longitude;
 	private String altitude;
+	private Date date;
 	
 }

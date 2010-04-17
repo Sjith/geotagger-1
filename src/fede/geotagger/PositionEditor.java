@@ -92,8 +92,10 @@ public class PositionEditor extends Activity {
 
 	
 	
-	private void populateFields(){
+	private void populateFields()
+	{
 		if(mPositionId == null){
+			mPositionName.setText(Position.buildPositionName());	// generate a new name
 			return;
 		}
 		Position pos = mDbHelper.getPositionObj(mPositionId);

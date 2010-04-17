@@ -1,5 +1,8 @@
 - sqlite optimizations, indexes
-- error dialog, must add cancel button
+
+- handle activity lifecycle
+http://markmail.org/message/evc6yzqv7ywezikr
+
 - position cleaner
 - range cleaner
 - context menu for range list
