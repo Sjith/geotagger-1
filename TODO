@@ -1,3 +1,4 @@
+- when editing a range, disable check
 - sqlite optimizations, indexes
 
 - handle activity lifecycle
@@ -9,7 +10,7 @@ http://markmail.org/message/evc6yzqv7ywezikr
 - auto generate valid position name
 - position date option
 - fill the correct coordinates
-- export to xml
+- export to xml, possibly from another thread
 - python on pc app
 - make the gui nicer
 

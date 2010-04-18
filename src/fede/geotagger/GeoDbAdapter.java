@@ -1,6 +1,13 @@
 package fede.geotagger;
 
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import org.xmlpull.v1.XmlSerializer;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -8,7 +15,10 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
+import android.os.Environment;
 import android.util.Log;
+import android.util.Xml;
+import android.widget.TextView;
 
 public class GeoDbAdapter {
   private static final String DATABASE_NAME = "geoDb.db";
@@ -212,6 +222,94 @@ public class GeoDbAdapter {
                     null, null, null, null, null);
   }
 
+  
+  public Cursor getRangesPositions()
+  {
+	  String query = "select r." + ROW_ID + 
+	  				 ", r." + START_RANGE_KEY +
+	  				 ", r." + END_RANGE_KEY + 
+	  				 ", p." + POSITION_NAME_KEY +
+	  				 ", p." + POSITION_LATITUDE_KEY + 
+	  				 ", p." + POSITION_LONGITUDE_KEY +
+	  				 ", P." + POSITION_ALTITUDE_KEY + 
+	  				 "from " + RANGE_TABLE + "r , " + POSITION_TABLE + " p " +
+	  				 "where r." + POSITION_ID_KEY + " = " + "p." + POSITION_ROW_ID; 
+	  
+	  Cursor c = db.rawQuery(query, null); 
+	  return c;
+  }
+  
+  public boolean storeToXml(String fileName)
+  {
+	  Cursor positionRangesCursor = getRangesPositions();
+	  if(positionRangesCursor.getCount() <= 0)
+		  return false;
+	  
+	  if(positionRangesCursor.moveToFirst() == false)
+		  return false;
+	  	  
+	  File newxmlfile = new File(Environment.getExternalStorageDirectory()+"/"+fileName);
+      try{
+        newxmlfile.createNewFile();
+      }catch(IOException e){
+        Log.e("IOException", "exception in createNewFile() method");
+      }
+      FileOutputStream fileos = null;          
+      try{
+        fileos = new FileOutputStream(newxmlfile);
+      }catch(FileNotFoundException e){
+        Log.e("FileNotFoundException", "can't create FileOutputStream");
+      }
+
+      XmlSerializer serializer = Xml.newSerializer();
+      try {
+
+             serializer.setOutput(fileos, "UTF-8");
+             //Write <?xml declaration with encoding (if encoding not null) and standalone flag (if standalone not null)
+             serializer.startDocument(null, Boolean.valueOf(true));
+             //set indentation option
+             serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
+             //start a tag called "root"
+             serializer.startTag(null, "root");
+             
+             do{
+            	 PositionForRange pos = fetchPositionForRange(positionRangesCursor);
+                  
+                  serializer.startTag(null, "range");
+                  
+                  serializer.attribute(null, "from", pos.getFrom().toString());
+                  serializer.attribute(null, "to", pos.getTo().toString());
+                  serializer.attribute(null, "latitude", pos.getLatitude());
+                  serializer.attribute(null, "longitude", pos.getLongitude());
+                  serializer.attribute(null, "altitude", pos.getAltitude());
+                  serializer.endTag(null, "range");
+             
+             } while (positionRangesCursor.moveToNext());     
+             serializer.endTag(null, "root");
+             serializer.endDocument();
+             //write xml data into the FileOutputStream
+             serializer.flush();
+             //finally we close the file stream
+             fileos.close();
+        } catch (Exception e) {
+             Log.e("Exception","error occurred while creating xml file");
+        }
+   
+	  return true;
+  }
+  
+  
+  public PositionForRange fetchPositionForRange(Cursor c)
+  {
+	  int first = 1;
+	  PositionForRange res = new PositionForRange(c.getLong(first++),
+			  									  c.getLong(first++),
+			  									  c.getString(first++),
+			  									  c.getString(first++),
+			  									  c.getString(first++),
+			  									  c.getString(first++));
+	  return res;
+  }
 
   
     

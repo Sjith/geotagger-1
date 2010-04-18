@@ -51,6 +51,7 @@ public class RangeElementEditor extends Activity {
 		mRangeRowId = extras != null ? extras.getLong(GeoDbAdapter.ROW_ID) 
 		        : null;
 		
+		
 		populateFields();
 	
 		
@@ -121,6 +122,10 @@ public class RangeElementEditor extends Activity {
 			mToRange.setText(newMaxRange.toString());
 			return;
 		}
+		
+		mFromRange.setEnabled(false); // not editable
+		mToRange.setEnabled(false);
+		
 		Cursor myRange = mDbHelper.getRange(mRangeRowId);
 		if(myRange == null){
 			return;
@@ -163,6 +168,10 @@ public class RangeElementEditor extends Activity {
 	
 	private boolean checkRanges(Long fromRange, Long toRange)
 	{	
+		if(mRangeRowId != null){	// cant edit ranges. There is no point in checking them
+			return true;
+		}
+		
 		if(fromRange == 0 || toRange == 0){
 			showErrorDialog(getString(R.string.invalid_range_name));
 			return false;
@@ -172,6 +181,7 @@ public class RangeElementEditor extends Activity {
 			showErrorDialog(getString(R.string.invalid_range_name));
 			return false;
 		}
+		
 		
 		if(mDbHelper.goodRangeBound(fromRange) == false){
 			showErrorDialog(getString(R.string.invalid_range_name));	
