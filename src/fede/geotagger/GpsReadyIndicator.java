@@ -11,8 +11,8 @@ public class GpsReadyIndicator extends LinearLayout{
 	private boolean mStatus;
 	
 	
-	public GpsReadyIndicator(Context context, AttributeSet  attrs){
-		super(context, attrs);
+	public GpsReadyIndicator(Context context, AttributeSet attr){
+		super(context, attr);
 		String infService = Context.LAYOUT_INFLATER_SERVICE; 
 		LayoutInflater li; 
 		li = (LayoutInflater)getContext().getSystemService(infService); 
