@@ -17,6 +17,7 @@
 	<activity android:name=".PositionList"></activity>
 	<activity android:name=".PositionListModifier"></activity>
 </application>
-
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/> 
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
 </manifest> 

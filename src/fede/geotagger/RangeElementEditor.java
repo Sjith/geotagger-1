@@ -2,24 +2,27 @@ package fede.geotagger;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
 import android.database.Cursor;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
 public class RangeElementEditor extends Activity {
 	static final private int MENU_VIEW_POSITIONS = Menu.FIRST;
 	static final private int MENU_VIEW_RANGES = Menu.FIRST + 1;
+	static final private int MENU_EXPORT_TO_XML = Menu.FIRST + 2;
 	
 	static final private int NEW_POSITION_ACTION = 1;
 	static final private int CHOOSE_POSITION_ACTION = 2;
@@ -31,6 +34,8 @@ public class RangeElementEditor extends Activity {
 	private Long mRangeRowId;
 	private PositionListElem mChoosenPosition;
 	private boolean mFromMain;
+	private GpsReadyIndicator mGpsReady;
+	private LocationUpdater mLUpdater;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +45,8 @@ public class RangeElementEditor extends Activity {
 		mChoosenPosition = (PositionListElem) findViewById(R.id.ChoosenPositionElem);
 		mFromRange = (EditText) findViewById(R.id.FromEditText);
 		mToRange = (EditText) findViewById(R.id.ToEditText);
-		
+		mGpsReady = (GpsReadyIndicator) findViewById(R.id.GpsReadyElemEditor);
+			
 		mDbHelper = new GeoDbAdapter(this);
         mDbHelper.open();
 		
@@ -51,10 +57,26 @@ public class RangeElementEditor extends Activity {
 		mRangeRowId = extras != null ? extras.getLong(GeoDbAdapter.ROW_ID) 
 		        : null;
 		
-		
+		setupLocationListener();
 		populateFields();
-	
+		setupButtons();		
 		
+	}
+	
+	private void setupLocationListener()
+	{
+		mLUpdater = new LocationUpdater(this, new LocationInterface(){
+		    public void statusReady (){
+		    	mGpsReady.statusOk();
+		    }
+		    public void statusNotReady(){
+		    	mGpsReady.statusKo();
+		    }			
+		});
+	}
+	
+	private void setupButtons()
+	{
 		// BUTTONS
 		Button choosePosButton = (Button) findViewById(R.id.GetPositionButton);
 		choosePosButton.setOnClickListener(new View.OnClickListener(){
@@ -86,11 +108,9 @@ public class RangeElementEditor extends Activity {
 	}
 
 	private void autoAddNewPosition(){
-		// TODO get latitude longitude
-		mPositionId = mDbHelper.addPosition(Position.buildPositionName(), 
-											"Latitude", 
-											"Longitude", 
-											"Altitude");
+		// todo check gps status
+		Location l = mLUpdater.getLocation();
+		mPositionId = mDbHelper.addPosition(new Position(l));
 	}
 	
 	@Override
@@ -111,8 +131,39 @@ public class RangeElementEditor extends Activity {
 		
 		menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
 		
+		menuItemId = MENU_EXPORT_TO_XML;
+		menuItemOrder = Menu.NONE;	 
+		menuItemText = R.string.export_to_xml_name;
+		menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
+		
 		return true;
 	}
+	
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) 
+	{
+		super.onOptionsItemSelected(item);
+		switch(item.getItemId()){
+			case MENU_VIEW_POSITIONS:{
+				Intent i = new Intent(this, PositionListModifier.class);
+		        startActivity(i);
+			break;
+			}
+			case MENU_VIEW_RANGES:{
+				Intent i = new Intent(this, RangeList.class);
+		        startActivity(i);
+		    break;
+			}
+			case MENU_EXPORT_TO_XML:{
+				mDbHelper.storeToXml(getString(R.string.file_name_name));
+		    break;
+			}
+		}
+	
+		return true;
+	}
+	
 
 	private void populateFields()
 	{
@@ -220,26 +271,7 @@ public class RangeElementEditor extends Activity {
 		}
 		return true;		
 	}
-	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		super.onOptionsItemSelected(item);
-		switch(item.getItemId()){
-			case MENU_VIEW_POSITIONS:{
-				Intent i = new Intent(this, PositionListModifier.class);
-		        startActivity(i);
-			break;
-			}
-			case MENU_VIEW_RANGES:{
-				Intent i = new Intent(this, RangeList.class);
-		        startActivity(i);
-		    break;
-			}
-		}
-	
-		return true;
-	}
-	
+
 	private void finalizeRange(){
 		if(checkAndAddRange()){
 			if(mRangeRowId == null){	// Coming here from the main screen

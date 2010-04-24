@@ -2,6 +2,8 @@ package fede.geotagger;
 
 import java.util.Date;
 
+import android.location.Location;
+
 public class Position {
 	public static String buildPositionName()
 	{
@@ -49,6 +51,19 @@ public class Position {
 		this.longitude = "";
 		this.altitude = "";
 		this.date = new Date();
+	}
+	
+	public Position(Location l)
+	{
+		Double lat = l.getLatitude();
+		Double lng = l.getLongitude();
+		Double alt = l.getAltitude();
+		this.name = buildPositionName();
+		this.latitude = lat.toString();
+		this.longitude = lng.toString();
+		this.altitude = alt.toString();;
+		this.date = new Date();
+		
 	}
 	
 	private String name;

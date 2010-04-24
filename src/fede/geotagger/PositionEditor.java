@@ -16,12 +16,11 @@ public class PositionEditor extends Activity {
 	private EditText mPositionName;
 	private GeoDbAdapter mDbHelper;
 	private Long mPositionId;
-	private String mLatitude;
-	private String mLongitude;
-	private String mAltitude;
 	private TextView mAltitudeText;
 	private TextView mLatitudeText;
 	private TextView mLongitudeText;
+	LocationUpdater mLUpdater;
+	private GpsReadyIndicator mGpsReady;
 	
 	
 	@Override
@@ -34,7 +33,7 @@ public class PositionEditor extends Activity {
 		mLatitudeText = (TextView) findViewById(R.id.PositionLayoutLatitude);
 		mLongitudeText = (TextView) findViewById(R.id.PositionLayoutLongitude);
 		mPositionName = (EditText) findViewById(R.id.PositionNameEditText);
-		
+		mGpsReady = (GpsReadyIndicator) findViewById(R.id.GpsReadyElemPosition);
 		mDbHelper = new GeoDbAdapter(this);
         mDbHelper.open();
 		
@@ -42,19 +41,18 @@ public class PositionEditor extends Activity {
 		mPositionId = extras != null ? extras.getLong(GeoDbAdapter.POSITION_ROW_ID) 
 		        : null;
 		
+		setupLocationListener();
 		populateFields();
 		
 		Button updatePosButton = (Button) findViewById(R.id.UpdatePositionButton);
 		updatePosButton.setOnClickListener(new View.OnClickListener(){
 			public void onClick(View view){
-				mLatitude = "latitudeName";
-				mLongitude = "longitudeName";
-				mAltitude = "altitudeName";
-				// TODO Take real location from gps / cell / whatever
-		
-				mAltitudeText.setText(mAltitude);
-				mLatitudeText.setText(mLatitude);
-				mLongitudeText.setText(mLongitude);
+				
+				// TODO check gps ready
+				Position pos = new Position(mLUpdater.getLocation());
+				mAltitudeText.setText(pos.getAltitude());
+				mLatitudeText.setText(pos.getLatitude());
+				mLongitudeText.setText(pos.getLongitude());
 			}});
 		
 
@@ -90,7 +88,17 @@ public class PositionEditor extends Activity {
 		
 	}
 
-	
+	private void setupLocationListener()
+	{
+		mLUpdater = new LocationUpdater(this, new LocationInterface(){
+		    public void statusReady (){
+		    	mGpsReady.statusOk();
+		    }
+		    public void statusNotReady(){
+		    	mGpsReady.statusKo();
+		    }			
+		});
+	}	
 	
 	private void populateFields()
 	{

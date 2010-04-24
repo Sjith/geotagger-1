@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Calendar;
 
 import org.xmlpull.v1.XmlSerializer;
 
@@ -18,7 +19,6 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.os.Environment;
 import android.util.Log;
 import android.util.Xml;
-import android.widget.TextView;
 
 public class GeoDbAdapter {
   private static final String DATABASE_NAME = "geoDb.db";
@@ -107,6 +107,11 @@ public class GeoDbAdapter {
   		contentValues.put(POSITION_NAME_KEY, positionName);
   	    
 	   return db.insert(POSITION_TABLE, null, contentValues);
+  }
+  
+  public long addPosition(Position p)
+  {
+	  return addPosition(p.getName(), p.getLatitude(), p.getLongitude(), p.getAltitude());
   }
   
 
@@ -232,7 +237,7 @@ public class GeoDbAdapter {
 	  				 ", p." + POSITION_LATITUDE_KEY + 
 	  				 ", p." + POSITION_LONGITUDE_KEY +
 	  				 ", P." + POSITION_ALTITUDE_KEY + 
-	  				 "from " + RANGE_TABLE + "r , " + POSITION_TABLE + " p " +
+	  				 " from " + RANGE_TABLE + " r , " + POSITION_TABLE + " p " +
 	  				 "where r." + POSITION_ID_KEY + " = " + "p." + POSITION_ROW_ID; 
 	  
 	  Cursor c = db.rawQuery(query, null); 
@@ -270,7 +275,7 @@ public class GeoDbAdapter {
              //set indentation option
              serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
              //start a tag called "root"
-             serializer.startTag(null, "root");
+             serializer.startTag(null, "ranges");
              
              do{
             	 PositionForRange pos = fetchPositionForRange(positionRangesCursor);
@@ -285,7 +290,7 @@ public class GeoDbAdapter {
                   serializer.endTag(null, "range");
              
              } while (positionRangesCursor.moveToNext());     
-             serializer.endTag(null, "root");
+             serializer.endTag(null, "ranges");
              serializer.endDocument();
              //write xml data into the FileOutputStream
              serializer.flush();

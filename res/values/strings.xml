@@ -29,4 +29,5 @@
 <string name="selected_position_name">Selected position</string>
 <string name="invalid_range_name">Invalid range</string>
 <string name="file_name_name">geotagger.xml</string>
+<string name="export_to_xml_name">Export to xml</string>
 </resources>

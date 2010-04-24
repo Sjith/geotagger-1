@@ -1,4 +1,3 @@
-- when editing a range, disable check
 - sqlite optimizations, indexes
 
 - handle activity lifecycle
@@ -7,7 +6,6 @@ http://markmail.org/message/evc6yzqv7ywezikr
 - position cleaner
 - range cleaner
 - context menu for range list
-- auto generate valid position name
 - position date option
 - fill the correct coordinates
 - export to xml, possibly from another thread
