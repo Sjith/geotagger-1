@@ -22,11 +22,11 @@ public class GpsReadyIndicator extends LinearLayout{
 	}
 	
 	public void statusOk(){
-		mGpsStatus.setText("Ready");
+		mGpsStatus.setBackgroundColor(getResources().getColor(R.color.gps_ready_color));
 		mStatus = true;
 	}
 	public void statusKo(){
-		mGpsStatus.setText("Not ready");
+		mGpsStatus.setBackgroundColor(getResources().getColor(R.color.gps_notready_color));
 		mStatus = false;
 	}
 	public boolean isOk()
