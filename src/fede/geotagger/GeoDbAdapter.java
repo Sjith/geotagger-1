@@ -23,7 +23,7 @@ import android.util.Xml;
 public class GeoDbAdapter {
   private static final String DATABASE_NAME = "geoDb.db";
   
-  private static final int DATABASE_VERSION = 2;
+  private static final int DATABASE_VERSION = 3;
   private static final String TAG = "DbHelper";
  
   
@@ -64,8 +64,15 @@ public class GeoDbAdapter {
     " integer primary key autoincrement, " +
     START_RANGE_KEY + " number, " + 
     END_RANGE_KEY + " number, " +
-    POSITION_ID_KEY + " number);";
-    
+    POSITION_ID_KEY + " integer, " +
+    "foreign key(" + POSITION_ID_KEY + ") references " + POSITION_TABLE + "(" + POSITION_ROW_ID + "));";
+  
+  private static final String CREATE_INDEX_RANGE_START = "create unique index idx_from_range on " + 
+  RANGE_TABLE + " (" + START_RANGE_KEY + ")";
+  
+  private static final String CREATE_INDEX_RANGE_END = "create unique index idx_from_range on " + 
+  RANGE_TABLE + " (" + END_RANGE_KEY + ")";
+  
   private static final String DATABASE_POSITION_CREATE = "create table " + 
   POSITION_TABLE + " (" + ROW_ID + 
     " integer primary key autoincrement, " +
@@ -381,9 +388,11 @@ public class GeoDbAdapter {
     // Called when no database exists in disk and the helper class needs
     // to create a new one. 
     @Override
-    public void onCreate(SQLiteDatabase _db) {
-      _db.execSQL(DATABASE_RANGE_CREATE);
+    public void onCreate(SQLiteDatabase _db) {      
       _db.execSQL(DATABASE_POSITION_CREATE);
+      _db.execSQL(DATABASE_RANGE_CREATE);
+      _db.execSQL(CREATE_INDEX_RANGE_START);
+      _db.execSQL(CREATE_INDEX_RANGE_END);
     }
 
     // Called when there is a database version mismatch meaning that the version

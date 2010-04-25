@@ -1,14 +1,9 @@
-- sqlite optimizations, indexes
-
-- handle activity lifecycle
-http://markmail.org/message/evc6yzqv7ywezikr
-
 - position cleaner
 - range cleaner
 - context menu for range list
 - position date option
-- fill the correct coordinates
 - export to xml, possibly from another thread
 - python on pc app
 - make the gui nicer
+- choose between gps and cell location or both
 
