@@ -51,14 +51,11 @@ public class LocationUpdater {
 	        public void onProviderEnabled(String provider) {}
 
 	        public void onStatusChanged(String provider, int status, Bundle extras) {
-	        	if( status == LocationProvider.OUT_OF_SERVICE ||
-	        		status == LocationProvider.TEMPORARILY_UNAVAILABLE){
+	        	if( status == LocationProvider.OUT_OF_SERVICE){
 	        		mInterface.statusNotReady();
 	        	}
 	        }
 	    };
-	    
-	    startUpdating();
 	}
 	
 	public void stopUpdating()
@@ -68,6 +65,6 @@ public class LocationUpdater {
 	
 	public void startUpdating()
 	{
-		mLManager.requestLocationUpdates(mLProvider, 2000, 10, mLListener);
+		mLManager.requestLocationUpdates(mLProvider, 10000, 0, mLListener);
 	}
 };

@@ -30,4 +30,6 @@
 <string name="invalid_range_name">Invalid range</string>
 <string name="file_name_name">geotagger.xml</string>
 <string name="export_to_xml_name">Export to xml</string>
+<string name="clean_all_name">Clean all</string>
+<string name="are_u_sure_to_clean_name">Are you sure to clean all?</string>
 </resources>

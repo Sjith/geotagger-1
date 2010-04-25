@@ -7,11 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
 import android.database.Cursor;
-import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +19,7 @@ public class RangeElementEditor extends Activity {
 	static final private int MENU_VIEW_POSITIONS = Menu.FIRST;
 	static final private int MENU_VIEW_RANGES = Menu.FIRST + 1;
 	static final private int MENU_EXPORT_TO_XML = Menu.FIRST + 2;
+	static final private int MENU_CLEAN_ALL = Menu.FIRST + 3;
 	
 	static final private int NEW_POSITION_ACTION = 1;
 	static final private int CHOOSE_POSITION_ACTION = 2;
@@ -48,7 +45,7 @@ public class RangeElementEditor extends Activity {
 		mGpsReady = (GpsReadyIndicator) findViewById(R.id.GpsReadyElemEditor);
 			
 		mDbHelper = new GeoDbAdapter(this);
-        mDbHelper.open();
+        
 		
         Intent i = getIntent();
         mFromMain = (i.getAction() == "android.intent.action.MAIN");
@@ -58,7 +55,6 @@ public class RangeElementEditor extends Activity {
 		        : null;
 		
 		setupLocationListener();
-		populateFields();
 		setupButtons();		
 		
 	}
@@ -86,6 +82,7 @@ public class RangeElementEditor extends Activity {
 	protected void onResume() {
 		super.onResume();
 		mDbHelper.open();
+		populateFields();
 		mLUpdater.startUpdating();		
 	}
 
@@ -156,6 +153,11 @@ public class RangeElementEditor extends Activity {
 		menuItemText = R.string.export_to_xml_name;
 		menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
 		
+		menuItemId = MENU_CLEAN_ALL;
+		menuItemOrder = Menu.NONE;	 
+		menuItemText = R.string.clean_all_name;
+		menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
+		
 		return true;
 	}
 	
@@ -177,6 +179,10 @@ public class RangeElementEditor extends Activity {
 			}
 			case MENU_EXPORT_TO_XML:{
 				mDbHelper.storeToXml(getString(R.string.file_name_name));
+		    break;
+			}
+			case MENU_CLEAN_ALL:{
+				cleanAll();
 		    break;
 			}
 		}
@@ -307,6 +313,7 @@ public class RangeElementEditor extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
+        mDbHelper.open();
         Bundle extras = intent.getExtras();
         switch(requestCode) {
 	        case NEW_POSITION_ACTION:
@@ -315,6 +322,27 @@ public class RangeElementEditor extends Activity {
 	            populatePosition();
 	            break;
         }
+    }
+    
+    private void cleanAll()
+    {
+    	String button1String = getString(R.string.ok_name); 
+    	String button2String = getString(R.string.cancel_name);
+    	AlertDialog.Builder ad = new AlertDialog.Builder(this); 
+    	ad.setTitle(R.string.clean_all_name); 
+    	ad.setMessage(R.string.are_u_sure_to_clean_name); 
+    	ad.setPositiveButton(button1String,
+    						 new OnClickListener() { 
+	    						public void onClick(DialogInterface dialog, int arg1) {
+	    							mDbHelper.removeAll();
+	    						} });
+    	
+    	ad.setNegativeButton(button2String, 
+    			             new OnClickListener(){
+    								public void onClick(DialogInterface dialog, int arg1) { // do nothing
+    						 } });
+    	
+    	ad.show();    	
     }
 
 }

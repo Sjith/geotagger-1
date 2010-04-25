@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Calendar;
 
 import org.xmlpull.v1.XmlSerializer;
 
@@ -23,8 +22,9 @@ import android.util.Xml;
 public class GeoDbAdapter {
   private static final String DATABASE_NAME = "geoDb.db";
   
-  private static final int DATABASE_VERSION = 3;
+  private static final int DATABASE_VERSION = 4;
   private static final String TAG = "DbHelper";
+  private boolean mOpen;
  
   
   
@@ -70,7 +70,7 @@ public class GeoDbAdapter {
   private static final String CREATE_INDEX_RANGE_START = "create unique index idx_from_range on " + 
   RANGE_TABLE + " (" + START_RANGE_KEY + ")";
   
-  private static final String CREATE_INDEX_RANGE_END = "create unique index idx_from_range on " + 
+  private static final String CREATE_INDEX_RANGE_END = "create unique index idx_end_range on " + 
   RANGE_TABLE + " (" + END_RANGE_KEY + ")";
   
   private static final String DATABASE_POSITION_CREATE = "create table " + 
@@ -92,15 +92,24 @@ public class GeoDbAdapter {
   public GeoDbAdapter(Context _context) {
     context = _context;
     dbHelper = new myDbHelper(context, DATABASE_NAME, null, DATABASE_VERSION);
+    mOpen = false;
   }
 
   public GeoDbAdapter open() throws SQLException {
-    db = dbHelper.getWritableDatabase();
-    return this;
+	if(mOpen == false){		// this because I want to call this in onresume and onactivityresult methods
+		db = dbHelper.getWritableDatabase();
+		return this;
+	}else{			
+		return this;
+	}
   }
 
   public void close() {
-    db.close();
+	if(mOpen == true){
+		db.close();
+	}else{
+		return;
+	}
   }
 
   // POSITION
@@ -131,6 +140,10 @@ public class GeoDbAdapter {
 	}
   }
 
+  public boolean removeAllPositions()
+  {
+		return db.delete(POSITION_TABLE, null, null) > 0;
+  }
    
   
   public Cursor getAllPositions () {
@@ -192,8 +205,6 @@ public class GeoDbAdapter {
     contentValues.put(POSITION_LONGITUDE_KEY, longitude);
   	contentValues.put(POSITION_ALTITUDE_KEY, altitude);
 	contentValues.put(POSITION_NAME_KEY, positionName);
-
-   // TODO Fill in the ContentValue based on the new object
     return db.update(POSITION_TABLE, contentValues, where, null);
   }
   
@@ -226,8 +237,11 @@ public class GeoDbAdapter {
   public boolean removeRange(long _rowIndex) {
     return db.delete(RANGE_TABLE, ROW_ID + "=" + _rowIndex, null) > 0;
   }
-
-   
+  
+  public boolean removeAllRanges()
+  {
+	  return db.delete(RANGE_TABLE, null, null) > 0;
+  }
   
   public Cursor getAllRanges () {
     return db.query(RANGE_TABLE, new String[] {ROW_ID, START_RANGE_KEY, END_RANGE_KEY, POSITION_ID_KEY}, 
@@ -377,6 +391,12 @@ public class GeoDbAdapter {
     return db.update(RANGE_TABLE, contentValues, where, null);
   }
   
+  public void removeAll()
+  {
+	  removeAllRanges();
+	  removeAllPositions();
+	  
+  }
 
 
   private static class myDbHelper extends SQLiteOpenHelper {
