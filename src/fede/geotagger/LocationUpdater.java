@@ -17,7 +17,6 @@ interface LocationInterface {
 
 
 public class LocationUpdater {
-	private Context mContext;
 	private LocationManager mLManager;
 	private LocationListener mLListener;
 	private String mLProvider;
@@ -28,10 +27,11 @@ public class LocationUpdater {
 		return mLManager.getLastKnownLocation(mLProvider);
 	}
 	
-	public LocationUpdater(Context c, LocationInterface i)
+	public LocationUpdater(Context c, 
+			LocationInterface i)
 	{
-		mContext = c;
-		mLManager = (LocationManager)c.getSystemService(mContext.LOCATION_SERVICE);
+		mInterface = i;
+		mLManager = (LocationManager)c.getSystemService(Context.LOCATION_SERVICE);
 
 	    Criteria criteria = new Criteria();
 	    criteria.setAccuracy(Criteria.ACCURACY_FINE);
@@ -39,8 +39,7 @@ public class LocationUpdater {
 	    criteria.setBearingRequired(false);
 	    criteria.setCostAllowed(true);
 	    criteria.setPowerRequirement(Criteria.POWER_LOW);
-	    mLProvider = mLManager.getBestProvider(criteria, true);    
-	    mLManager.requestLocationUpdates(mLProvider, 2000, 10, mLListener);    
+	    mLProvider = mLManager.getBestProvider(criteria, true);    	        
     
 	    mLListener = new LocationListener() {
 	        public void onLocationChanged(Location location) {
@@ -58,5 +57,17 @@ public class LocationUpdater {
 	        	}
 	        }
 	    };
+	    
+	    startUpdating();
+	}
+	
+	public void stopUpdating()
+	{
+		mLManager.removeUpdates(mLListener);
+	}
+	
+	public void startUpdating()
+	{
+		mLManager.requestLocationUpdates(mLProvider, 2000, 10, mLListener);
 	}
 };

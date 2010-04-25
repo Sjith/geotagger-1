@@ -30,6 +30,18 @@ public class PositionListModifier extends PositionList {
         fillData();
     }
     
+	@Override
+	protected void onPause() {		
+		super.onPause();
+		mDbHelper.close();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		mDbHelper.open();		
+	}
+    
 
     
 	// 			MENUS

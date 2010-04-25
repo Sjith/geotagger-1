@@ -75,6 +75,26 @@ public class RangeElementEditor extends Activity {
 		});
 	}
 	
+	@Override
+	protected void onPause() {		
+		super.onPause();
+		mLUpdater.stopUpdating();
+		mDbHelper.close();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		mDbHelper.open();
+		mLUpdater.startUpdating();		
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		// TODO Auto-generated method stub
+		super.onSaveInstanceState(outState);
+	}
+
 	private void setupButtons()
 	{
 		// BUTTONS

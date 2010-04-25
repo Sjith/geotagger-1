@@ -34,6 +34,18 @@ public class RangeList extends ListActivity {
         registerForContextMenu(getListView());
     }
     
+	@Override
+	protected void onPause() {		
+		super.onPause();
+		mDbHelper.close();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		mDbHelper.open();		
+	}
+    
     @Override public void onCreateContextMenu(ContextMenu menu,
 			View v,
 			ContextMenu.

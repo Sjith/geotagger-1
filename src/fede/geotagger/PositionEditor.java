@@ -10,6 +10,20 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 public class PositionEditor extends Activity {
+	@Override
+	protected void onPause() {
+		super.onPause();
+		mDbHelper.close();
+		mLUpdater.stopUpdating();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		mDbHelper.open();
+		mLUpdater.startUpdating();	
+	}
+
 	static final private int MENU_OK = Menu.FIRST;
 	static final private int MENU_CANCEL = Menu.FIRST + 1;
 	
