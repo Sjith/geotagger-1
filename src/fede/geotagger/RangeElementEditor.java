@@ -313,6 +313,9 @@ public class RangeElementEditor extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
+        if(resultCode == RESULT_CANCELED){
+        	return;
+        }
         mDbHelper.open();
         Bundle extras = intent.getExtras();
         switch(requestCode) {
