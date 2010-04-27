@@ -1,5 +1,7 @@
 - context menu for range list
 - position date option
+- add autoadd position only button
+- export to gpx option
 - move xml export to another thread
 - python on pc app
 - make the gui nicer
