@@ -1,23 +1,64 @@
 from optparse import OptionParser
 from elementtree.ElementTree import Element, SubElement, dump, XML, parse, dump
 from bisect import bisect
+import re
+from os import listdir
+import pyexiv2
 
 verbose = False
 
-def l(message):
+def trace(message):
 	if verbose == True:
 		print message
 
 class GeoTagger():
-	def __init__(self):
+	def __init__(self, options):
 		self.startRanges = []
 		self.ranges = {}
+		self.options = options
+		self.sorted = False
+	
+	def sort(self):
+		if self.sorted:
+			return
+		self.startRanges.sort()
+
 	def addRange(self, range):
-		l('adding ' + repr(range))
+		trace('adding ' + repr(range))
 		self.startRanges.append(range.start)
 		self.ranges[range.start] = range
+
+	def getRange(self, pictureNumber):
+		self.sort()
+		trace('trying to get valid range for ' + str(pictureNumber))
+
+		candidatePos = bisect(self.startRanges, pictureNumber)
+		if candidatePos == 0:
+			trace('not pos found for' + str(pictureNumber))
+			raise NotValidRange
+		if candidatePos == len(self.startRanges):	# out of last element. Gotta check last one
+			candidatePos = candidatePos - 1
+			
+		candidateStart = self.startRanges[candidatePos]		#candidate start because need to check final element of range
+		trace('candidate start for ' + str(pictureNumber) + ' ' + str(candidateStart))
+		range = self.ranges[candidateStart]
+
+		if range.isSuitable(pictureNumber) == False:	#checks if candidate range is valid
+			trace('not valid range found for' + pictureNumber)
+			raise NotValidRange
+		return range
+	
 	def __repr__():
 		return 'ranges:' + ranges + ' startranges:' + startRanges
+
+	def isValidPictureFile(self, filename):
+		ext = filename.rsplit('.')[-1]
+		trace(filename + ' extension is ' + ext)
+		if ext.upper() == self.options.filetype.upper():
+			trace('is valid file')
+			return True
+		return False
+		
 
 class NotValidRange(Exception):
 	pass
@@ -28,9 +69,8 @@ def parseArguments():
 	parser.add_option("-g", "--geotaggerfile", dest="geofile", help="location of geotagger xml", default="geotagger.xml")
 	parser.add_option("-d", "--dir", dest="picdir", help="picture directory", default=".")
 	parser.add_option("-v", "--verbose", dest="verbose", action="store_true", help="verbose mode on")
+	parser.add_option("-f", "--fileext", dest="filetype", help="picture file extension", default="jpg")
 	(options, args) = parser.parse_args()
-	global verbose
-	verbose = options.verbose
 	return options
 
 class Position:
@@ -41,6 +81,20 @@ class Position:
 
 	def __repr__(self):
 		return 'lat:' + self.latitude + ' long:' + self.longitude + ' alt:' +self.altitude
+	def getLat(self):
+		fLat = float(self.latitude)
+		if(fLat > 0):
+			return (fLat, 'N')
+		else:
+			return (-fLat, 'S')
+
+	def getLong(self):
+		fLong = float(self.longitude)
+		if(fLong > 0):
+			return (fLong, 'W')
+		else:
+			return (-fLong, 'E')
+
 
 class RangePos:
 	def __init__(self, start, end, position):
@@ -48,64 +102,96 @@ class RangePos:
 		self.end = end
 		self.position = position
 	
-	def isSuitable(picture):
-		if picture >= self.start and picture <= self.end:
-			return true
-		return false
+	def isSuitable(self, picture):
+		if (picture >= self.start) and (picture <= self.end):
+			return True
+		return False
 
 	def __init__(self, xmlrange):
-		self.start = xmlrange.attrib['from']
-		self.end = xmlrange.attrib['to']
+		self.start = long(xmlrange.attrib['from'])
+		self.end = long(xmlrange.attrib['to'])
 		try:
 			lat = xmlrange.attrib['latitude']
 			lon = xmlrange.attrib['longitude']
 			alt = xmlrange.attrib['altitude']
 		except:
-			l('some attributes not found')
+			trace('some attributes not found')
 		self.position = Position(lat, lon, alt)
 
 	def __repr__(self):
-		return 'start:' + self.start + ' end:' + self.end + ' pos:' + repr(self.position)
+		return 'start:' + str(self.start) + ' end:' + str(self.end) + ' pos:' + repr(self.position)
+
+
+
+numbersRe = re.compile('[0-9]+')	#matches AT LEAST one number
 
 class PictureFile:
 	def __init__(self, name):
 		self.name = name
+	def getNumber(self):
+		res = numbersRe.search(self.name)
+		if res == None:
+			trace('get number for ' + self.name + ' ' + 0)
+			return 0
+		trace('get number for ' + self.name + ' ' + res.group(0))
+		return long(res.group(0))
+		
+	
+	def writeExif(self, range):	
+		metadata = pyexiv2.ImageMetadata(self.name)
+		metadata.read()
+		tag = metadata['']
+		tag.value = 
+		tag = metadata['']
+		tag.value = 
+		tag = metadata['']
+		tag.value = 
 
-	def getRange():
-		l('trying to get valid range for ' + self.numberid)
-		candidatePos = bisect(startRanges, self.numberid)
-		candidateStart = startRanges[candidatePos]
-		l('candidate start for ' + self.numberid + ' ' + candidateStart)
-		range = ranges[candidateStart]
-		if range.isSuitable(self.numberid) == false:
-			l('not valid range found for' + self.numberid)
-			raise NotValidRange
-		return range
-			
-	def writeExif():	
-		#TODO
-		pass
 
-
-def processFile(filexml, g):
-	l('Processing ' + filexml)
+def processXmlFile(filexml, g):
+	trace('Processing ' + filexml)
 	tree = parse(filexml)
 	dump(tree)
 	allranges = tree.findall('range')
 	for xmlrange in allranges:
-		l('processing xml row')
+		trace('processing xml row')
+		#try:
+		r = RangePos(xmlrange)
+		g.addRange(r)
+		#except:
+		#	trace('unable to handle:')
+		#	if verbose:
+		#		dump(xmlrange)
+
+
+def writeInfoToPictures(g, dir):
+	trace('trying to write files in ' + dir)
+	for file in listdir(dir):
 		try:
-			r = RangePos(xmlrange)
-			g.addRange(r)
-		except:
-			l('unable to handle:')
-			if verbose:
-				dump(xmlrange)
+			if g.isValidPictureFile(file):
+				trace(file + ' is a valid picture')
+				p = PictureFile(file)
+				n = p.getNumber()
+				if n == 0:
+					continue
+				r = g.getRange(n)
+				trace('Got range ' + repr(r))
+				p.writeExif(r)
 
+		except NotValidRange:
+			trace('Range invalid for ' + file)
+		#except:
+		#	trace('Could not handle ' + file)
+			
 	
-if __name__ == "__main__":
-	options = parseArguments()
-	l('verbose mode on')
-	g = GeoTagger()
-	processFile(options.geofile, g)
 
+def run():
+	global verbose
+	options = parseArguments()
+	verbose = options.verbose
+	trace('verbose mode on')
+	g = GeoTagger(options)
+	processXmlFile(options.geofile, g)
+	writeInfoToPictures(g, options.picdir)
+
+run()
