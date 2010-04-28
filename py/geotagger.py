@@ -138,14 +138,20 @@ class PictureFile:
 		
 	
 	def writeExif(self, range):	
+		(lat, latside) = range.getLat()
+		(lon, lonside) = range.getLong()
 		metadata = pyexiv2.ImageMetadata(self.name)
 		metadata.read()
-		tag = metadata['']
-		tag.value = 
-		tag = metadata['']
-		tag.value = 
-		tag = metadata['']
-		tag.value = 
+		tag = metadata['Exif.GPSInfo.GPSLatitudeRef']
+		tag.value = latside
+		tag = metadata['Exif.GPSInfo.GPSLatitude']
+		tag.value = str(lat)
+		tag = metadata['Exif.GPSInfo.GPSLongitudeRef']
+		tag.value = lonside
+		tag = metadata['Exif.GPSInfo.GPSLongitude']
+		tag.value = str(lon)
+		metadata.write()
+
 
 
 def processXmlFile(filexml, g):
