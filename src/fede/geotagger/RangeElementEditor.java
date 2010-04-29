@@ -21,8 +21,7 @@ public class RangeElementEditor extends Activity {
 	static final private int MENU_EXPORT_TO_XML = Menu.FIRST + 2;
 	static final private int MENU_CLEAN_ALL = Menu.FIRST + 3;
 	
-	static final private int NEW_POSITION_ACTION = 1;
-	static final private int CHOOSE_POSITION_ACTION = 2;
+	static final private int CHOOSE_POSITION_ACTION = 1;
 	
 	private EditText mFromRange;
 	private EditText mToRange;
@@ -105,8 +104,8 @@ public class RangeElementEditor extends Activity {
 		Button createNewPosButton = (Button) findViewById(R.id.AddNewPositionButton);
 		createNewPosButton.setOnClickListener(new View.OnClickListener(){
 			public void onClick(View view){
-				Intent i = new Intent(RangeElementEditor.this, PositionEditor.class);
-		        startActivityForResult(i, NEW_POSITION_ACTION);
+				autoAddNewPosition();
+				populatePosition();
 			}});
 		
 		Button autoSetNewPosButton = (Button) findViewById(R.id.FastAddNewPositionButton);
@@ -121,6 +120,13 @@ public class RangeElementEditor extends Activity {
 		okButton.setOnClickListener(new View.OnClickListener(){
 			public void onClick(View view){
 				finalizeRange();
+			}});
+		
+		Button incrementButton = (Button) findViewById(R.id.AddEndRangeButton);
+		incrementButton.setOnClickListener(new View.OnClickListener(){
+			public void onClick(View view){
+				Long increment = Long.parseLong(mToRange.getText().toString()) + 1;
+				mToRange.setText(increment.toString());
 			}});
 	}
 
@@ -319,7 +325,6 @@ public class RangeElementEditor extends Activity {
         mDbHelper.open();
         Bundle extras = intent.getExtras();
         switch(requestCode) {
-	        case NEW_POSITION_ACTION:
 	        case CHOOSE_POSITION_ACTION:
 	            mPositionId = extras.getLong(GeoDbAdapter.POSITION_ID_KEY);
 	            populatePosition();

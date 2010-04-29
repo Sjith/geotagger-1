@@ -5,10 +5,11 @@
 <string name="ranges_name">Picture Ranges</string>
 <string name="from_name">From</string>
 <string name="to_name">To</string>
-<string name="choose_position_name">Choose Position</string>
+<string name="choose_position_name">Choose Existing Position</string>
 <string name="add_new_position_name">Add New Position</string>
 <string name="fast_add_new_position_name">Auto Set Position</string>
 <string name="ok_name">Ok</string>
+<string name="add_range_name">+</string>
 <string name="cancel_name">Cancel</string>
 <string name="add_name">Add</string>
 <string name="edit_name">Edit</string>
