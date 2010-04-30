@@ -2,4 +2,5 @@
 <color name="gps_notready_color">#6F00</color>
 <color name="gps_ready_color">#60F0</color>
 <color name="gps_almost_ready_color">#7FF0</color>
+<color name="background_color">#000080</color>
 </resources>

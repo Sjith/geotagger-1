@@ -7,7 +7,7 @@
 <string name="to_name">To</string>
 <string name="choose_position_name">Choose Existing Position</string>
 <string name="add_new_position_name">Add New Position</string>
-<string name="fast_add_new_position_name">Auto Set Position</string>
+<string name="fast_add_new_position_name">Add Range With New Position</string>
 <string name="ok_name">Ok</string>
 <string name="add_range_name">+</string>
 <string name="cancel_name">Cancel</string>
@@ -33,4 +33,5 @@
 <string name="export_to_xml_name">Export to xml</string>
 <string name="clean_all_name">Clean all</string>
 <string name="are_u_sure_to_clean_name">Are you sure to clean all?</string>
+<string name="gps_not_ready_name">Gps not ready yet</string>
 </resources>
