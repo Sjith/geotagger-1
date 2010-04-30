@@ -28,4 +28,11 @@ public class PositionListElem extends TableLayout {
 		mLatitude.setText(latitude);
 		mLongitude.setText(longitude);
 	}
+	
+	public void reset()
+	{
+		mName.setText("");
+		mLatitude.setText("");
+		mLongitude.setText("");
+	}
 }

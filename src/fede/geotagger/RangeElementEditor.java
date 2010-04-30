@@ -29,15 +29,17 @@ public class RangeElementEditor extends Activity {
 	private Long mPositionId;
 	private Long mRangeRowId;
 	private PositionListElem mChoosenPosition;
-	private boolean mFromMain;
+	
 	private GpsReadyIndicator mGpsReady;
 	private LocationUpdater mLUpdater;
+	private GeotaggerUtils mUtils;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.range_edit);
 		
+		mUtils = new GeotaggerUtils();
 		mChoosenPosition = (PositionListElem) findViewById(R.id.ChoosenPositionElem);
 		mFromRange = (EditText) findViewById(R.id.FromEditText);
 		mToRange = (EditText) findViewById(R.id.ToEditText);
@@ -47,7 +49,6 @@ public class RangeElementEditor extends Activity {
         
 		
         Intent i = getIntent();
-        mFromMain = (i.getAction() == "android.intent.action.MAIN");
         
 		Bundle extras = i.getExtras();            
 		mRangeRowId = extras != null ? extras.getLong(GeoDbAdapter.ROW_ID) 
@@ -56,18 +57,6 @@ public class RangeElementEditor extends Activity {
 		setupLocationListener();
 		setupButtons();		
 		
-	}
-	
-	private void setupLocationListener()
-	{
-		mLUpdater = new LocationUpdater(this, new LocationInterface(){
-		    public void statusReady (){
-		    	mGpsReady.statusOk();
-		    }
-		    public void statusNotReady(){
-		    	mGpsReady.statusKo();
-		    }			
-		});
 	}
 	
 	@Override
@@ -90,6 +79,21 @@ public class RangeElementEditor extends Activity {
 		// TODO Auto-generated method stub
 		super.onSaveInstanceState(outState);
 	}
+	
+	
+	private void setupLocationListener()
+	{
+		mLUpdater = new LocationUpdater(this, new LocationInterface(){
+		    public void statusReady (){
+		    	mGpsReady.statusOk();
+		    }
+		    public void statusNotReady(){
+		    	mGpsReady.statusKo();
+		    }			
+		});
+	}
+	
+
 
 	private void setupButtons()
 	{
@@ -104,16 +108,18 @@ public class RangeElementEditor extends Activity {
 		Button createNewPosButton = (Button) findViewById(R.id.AddNewPositionButton);
 		createNewPosButton.setOnClickListener(new View.OnClickListener(){
 			public void onClick(View view){
-				autoAddNewPosition();
-				populatePosition();
+				if(autoAddNewPosition()){
+					populatePosition();
+				}
 			}});
 		
 		Button autoSetNewPosButton = (Button) findViewById(R.id.FastAddNewPositionButton);
 		autoSetNewPosButton.setOnClickListener(new View.OnClickListener(){
 			public void onClick(View view){
-				autoAddNewPosition();
-				populatePosition();
-				finalizeRange();
+				if(autoAddNewPosition()){
+					populatePosition();
+					finalizeRange();
+				};
 			}});
 		
 		Button okButton = (Button) findViewById(R.id.RangeElemOkButton);
@@ -130,11 +136,7 @@ public class RangeElementEditor extends Activity {
 			}});
 	}
 
-	private void autoAddNewPosition(){
-		// todo check gps status
-		Location l = mLUpdater.getLocation();
-		mPositionId = mDbHelper.addPosition(new Position(l));
-	}
+
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -196,7 +198,18 @@ public class RangeElementEditor extends Activity {
 		return true;
 	}
 	
-
+	private boolean autoAddNewPosition(){
+		if(mGpsReady.isOk() == false){
+			mUtils.showErrorDialog(getString(R.string.gps_not_ready_name), 
+								   getString(R.string.error_name), 
+								   this);
+			return false;
+		}
+		Location l = mLUpdater.getLocation();
+		mPositionId = mDbHelper.addPosition(new Position(l));
+		return true;
+	}
+	
 	private void populateFields()
 	{
 		if(mRangeRowId == null){	// its a new record. Try to make the user's life easier
@@ -228,26 +241,7 @@ public class RangeElementEditor extends Activity {
         mChoosenPosition.setValues(pos.getName(), pos.getLatitude(), pos.getLongitude());
 	}
 	
-	private void showErrorDialog(String errorString)
-	{
-    	Context context = this; 
-    	String title = getString(R.string.invalid_range_name); 
-    	Position pos = mDbHelper.getPositionObj(mPositionId);
-    	if(pos == null){
-    		return;
-    	} 
-    	String button1String = getString(R.string.ok_name); 
-    	AlertDialog.Builder ad = new AlertDialog.Builder(context); 
-    	ad.setTitle(title); 
-    	ad.setMessage(errorString); 
-    	ad.setPositiveButton(button1String,
-    						 new OnClickListener() { 
-	    						public void onClick(DialogInterface dialog, int arg1) {
-	    							// do nothing
-	    						} });
-    	ad.show();
-    	return;    
-	}
+	
 	
 	private boolean checkRanges(Long fromRange, Long toRange)
 	{	
@@ -256,23 +250,31 @@ public class RangeElementEditor extends Activity {
 		}
 		
 		if(fromRange == 0 || toRange == 0){
-			showErrorDialog(getString(R.string.invalid_range_name));
+			mUtils.showErrorDialog(getString(R.string.invalid_range_name), 
+								   getString(R.string.invalid_range_name),
+								   this);
 			return false;
 		}
 		
 		if(fromRange > toRange){
-			showErrorDialog(getString(R.string.invalid_range_name));
+			mUtils.showErrorDialog(getString(R.string.error_name), 
+											 getString(R.string.invalid_range_name),
+											 this);
 			return false;
 		}
 		
 		
 		if(mDbHelper.goodRangeBound(fromRange) == false){
-			showErrorDialog(getString(R.string.invalid_range_name));	
+			mUtils.showErrorDialog(getString(R.string.error_name), 
+					 getString(R.string.invalid_range_name),
+					 this);	
 			return false;
 		}
 		
 		if(mDbHelper.goodRangeBound(toRange) == false){
-			showErrorDialog(getString(R.string.invalid_range_name));	
+			mUtils.showErrorDialog(getString(R.string.error_name), 
+					 getString(R.string.invalid_range_name),
+					 this);
 			return false;
 		}
 		
@@ -282,20 +284,19 @@ public class RangeElementEditor extends Activity {
 	private boolean checkAndAddRange()
 	{
 		if(mPositionId == null || mPositionId == 0){
-			showErrorDialog(getString(R.string.error_name));	
+			mUtils.showErrorDialog(getString(R.string.error_name), 
+								   getString(R.string.invalid_range_name),
+								   this);
 			return false;
 		}
 		
 		Long fromRange = Long.parseLong(mFromRange.getText().toString());
 		Long toRange = Long.parseLong(mToRange.getText().toString());
-		
-		
+				
 		if(checkRanges(fromRange, toRange) == false){
 			return false;
 		}
-		
-		
-		
+				
 		if(mRangeRowId == null){
 			mDbHelper.addRange(fromRange.intValue(), toRange.intValue(), mPositionId.intValue());
 		}else{
@@ -307,8 +308,9 @@ public class RangeElementEditor extends Activity {
 	private void finalizeRange(){
 		if(checkAndAddRange()){
 			if(mRangeRowId == null){	// Coming here from the main screen
-				Intent i = new Intent(this, RangeElementEditor.class);
-		        startActivity(i);
+				mPositionId = null;
+				mChoosenPosition.reset();
+				populateFields();				
 			}else{						// Coming here from range list
 				setResult(RESULT_OK);
 				finish();
