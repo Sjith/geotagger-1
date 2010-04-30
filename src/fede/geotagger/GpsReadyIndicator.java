@@ -18,6 +18,7 @@ public class GpsReadyIndicator extends LinearLayout{
 		li = (LayoutInflater)getContext().getSystemService(infService); 
 		li.inflate(R.layout.gps_ready_token, this, true);
 		mGpsStatus = (TextView) findViewById(R.id.GpsReadyText);
+		mGpsStatus.setText("Gps Status");
 		statusKo();
 	}
 	
