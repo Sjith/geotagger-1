@@ -4,6 +4,7 @@ from bisect import bisect
 import re
 from os import listdir
 import os
+import sys
 
 
 verbose = False
@@ -92,9 +93,9 @@ class Position:
 	def getLong(self):
 		fLong = float(self.longitude)
 		if(fLong > 0):
-			return (fLong, 'W')
+			return (fLong, 'E')
 		else:
-			return (-fLong, 'E')
+			return (-fLong, 'W')
 
 
 class RangePos:
