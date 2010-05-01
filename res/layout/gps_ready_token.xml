@@ -4,7 +4,9 @@ android:layout_height="fill_parent"
 xmlns:android="http://schemas.android.com/apk/res/android">
 <TextView 
 	android:id="@+id/GpsReadyText" 
+	android:text="@string/gps_status_name"
 	android:layout_width="fill_parent" 
 	android:layout_height="15dp" 
+	android:textColor="@color/text_color"
 	android:gravity="center_horizontal"></TextView>
 </LinearLayout>

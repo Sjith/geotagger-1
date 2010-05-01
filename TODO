@@ -1,9 +1,9 @@
 - context menu for range list
 - position date option
-- add autoadd position only button
 - export to gpx option
 - move xml export to another thread
 - python on pc app
 - make the gui nicer
 - choose between gps and cell location or both
+- position name edit text on main page
 
