@@ -8,7 +8,7 @@
 <string name="to_name">To</string>
 <string name="choose_position_name">Choose Existing Position</string>
 <string name="add_new_position_name">Add Live Position</string>
-<string name="fast_add_new_position_name">Add Range With Live Position</string>
+<string name="fast_add_new_position_name">Store Range With Live Position</string>
 <string name="ok_name">Ok</string>
 <string name="add_range_name">+</string>
 <string name="cancel_name">Cancel</string>
