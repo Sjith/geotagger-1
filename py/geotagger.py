@@ -226,6 +226,7 @@ def run():
 		processXmlFile(options.geofile, g)
 	except:
 		print 'Unable to process ' + options.geofile
+		return
 	
 	writeInfoToPictures(g, options.picdir)
 
