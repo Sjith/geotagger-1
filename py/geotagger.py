@@ -3,7 +3,8 @@ from elementtree.ElementTree import Element, SubElement, dump, XML, parse, dump
 from bisect import bisect
 import re
 from os import listdir
-import pyexiv2
+import os
+
 
 verbose = False
 
@@ -135,9 +136,24 @@ class PictureFile:
 			return 0
 		trace('get number for ' + self.name + ' ' + res.group(0))
 		return long(res.group(0))
-		
-	
-	def writeExif(self, range):	
+
+	def writeExifTool(self, position):	
+		(lat, latRef) = position.getLat()
+		(lon, longRef) = position.getLong()
+		alt = position.altitude
+    
+		if sys.platform != 'win32':
+			command = 'exiftool -m -overwrite_original -n -GPSLongitude=%f -GPSLatitude=%f \
+			-GPSLongitudeRef=%s -GPSLatitudeRef=%s -GPSAltitude=%s "%s"'\
+			%(lon,lat,longRef,latRef,alt,self.name)
+		else:
+			command = 'exiftool.exe -m -overwrite_original -n -GPSLongitude=%f -GPSLatitude=%f \
+			-GPSLongitudeRef=%s -GPSLatitudeRef=%s -GPSAltitude=%s "%s"'\
+			%(lon,lat,longRef,latRef,alt,self.name)
+		trace('Executing ' + command)
+		os.popen(command)
+
+	def writeExifPyExiv(self, range):	
 		(lat, latside) = range.getLat()
 		(lon, lonside) = range.getLong()
 		metadata = pyexiv2.ImageMetadata(self.name)
@@ -151,6 +167,14 @@ class PictureFile:
 		tag = metadata['Exif.GPSInfo.GPSLongitude']
 		tag.value = str(lon)
 		metadata.write()
+
+try: 
+	import pexiv2	
+	PictureFile.writeExif = PictureFile.writeExifPyExiv
+except:	
+	#because after spending three nights I didnt manage to compile pyexiv2 under macosx
+	PictureFile.writeExif = PictureFile.writeExifTool
+
 
 
 
@@ -182,7 +206,7 @@ def writeInfoToPictures(g, dir):
 					continue
 				r = g.getRange(n)
 				trace('Got range ' + repr(r))
-				p.writeExif(r)
+				p.writeExif(r.position)
 
 		except NotValidRange:
 			trace('Range invalid for ' + file)
@@ -197,7 +221,11 @@ def run():
 	verbose = options.verbose
 	trace('verbose mode on')
 	g = GeoTagger(options)
-	processXmlFile(options.geofile, g)
+	try:
+		processXmlFile(options.geofile, g)
+	except:
+		print 'Unable to process ' + options.geofile
+	
 	writeInfoToPictures(g, options.picdir)
 
 run()
