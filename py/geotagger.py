@@ -72,6 +72,7 @@ def parseArguments():
 	parser.add_option("-d", "--dir", dest="picdir", help="picture directory", default=".")
 	parser.add_option("-v", "--verbose", dest="verbose", action="store_true", help="verbose mode on")
 	parser.add_option("-f", "--fileext", dest="filetype", help="picture file extension", default="jpg")
+	parser.add_option("-t", "--exiftool", dest="useExifTool", help="force to use exif tool")
 	(options, args) = parser.parse_args()
 	return options
 
@@ -80,22 +81,25 @@ class Position:
 		self.latitude = l
 		self.longitude = lo
 		self.altitude = al
+		self.fLat = float(self.latitude)
+		if self.fLat > 0:
+			self.latOrientation = 'N'
+		else:
+			self.fLat = -self.fLat;
+			self.latOrientation = 'N'
+
+		self.fLong = float(self.longitude)
+		if self.fLong > 0:
+			self.longOrientation = 'E'
+		else:
+			self.fLong = -self.fLong;
+			self.longOrientation = 'W'
+
+		self.fAltitude = float(al)
+
 
 	def __repr__(self):
 		return 'lat:' + self.latitude + ' long:' + self.longitude + ' alt:' +self.altitude
-	def getLat(self):
-		fLat = float(self.latitude)
-		if(fLat > 0):
-			return (fLat, 'N')
-		else:
-			return (-fLat, 'S')
-
-	def getLong(self):
-		fLong = float(self.longitude)
-		if(fLong > 0):
-			return (fLong, 'E')
-		else:
-			return (-fLong, 'W')
 
 
 class RangePos:
@@ -127,7 +131,7 @@ class RangePos:
 
 numbersRe = re.compile('[0-9]+')	#matches AT LEAST one number
 
-class PictureFile:
+class BasePictureFile:
 	def __init__(self, name):
 		self.name = name
 	def getNumber(self):
@@ -138,15 +142,28 @@ class PictureFile:
 		trace('get number for ' + self.name + ' ' + res.group(0))
 		return long(res.group(0))
 
-	def writeExifTool(self, position):	
-		(lat, latRef) = position.getLat()
-		(lon, longRef) = position.getLong()
-		alt = position.altitude
-    
+
+class PyPictureFile(BasePictureFile):
+	def writeExif(self, pos):	
+		metadata = pyexiv2.ImageMetadata(self.name)
+		metadata.read()
+		tag = metadata['Exif.GPSInfo.GPSLatitudeRef']
+		tag.value = pos.latOrientation
+		tag = metadata['Exif.GPSInfo.GPSLatitude']
+		tag.value = str(pos.fLat)
+		tag = metadata['Exif.GPSInfo.GPSLongitudeRef']
+		tag.value = pos.longOrientation
+		tag = metadata['Exif.GPSInfo.GPSLongitude']
+		tag.value = str(pos.fLong)
+		metadata.write()
+
+
+class ExToolPictureFile(BasePictureFile):
+	def writeExif(self, pos):	
 		if sys.platform != 'win32':
 			command = 'exiftool -m -overwrite_original -n -GPSLongitude=%f -GPSLatitude=%f \
-			-GPSLongitudeRef=%s -GPSLatitudeRef=%s -GPSAltitude=%s "%s"'\
-			%(lon,lat,longRef,latRef,alt,self.name)
+			-GPSLongitudeRef=%s -GPSLatitudeRef=%s -GPSAltitude=%f "%s"'\
+			%(pos.fLong,pos.fLat,pos.longOrientation,pos.latOrientation,pos.fAltitude,self.name)
 		else:
 			command = 'exiftool.exe -m -overwrite_original -n -GPSLongitude=%f -GPSLatitude=%f \
 			-GPSLongitudeRef=%s -GPSLatitudeRef=%s -GPSAltitude=%s "%s"'\
@@ -154,27 +171,15 @@ class PictureFile:
 		trace('Executing ' + command)
 		os.popen(command)
 
-	def writeExifPyExiv(self, range):	
-		(lat, latside) = range.getLat()
-		(lon, lonside) = range.getLong()
-		metadata = pyexiv2.ImageMetadata(self.name)
-		metadata.read()
-		tag = metadata['Exif.GPSInfo.GPSLatitudeRef']
-		tag.value = latside
-		tag = metadata['Exif.GPSInfo.GPSLatitude']
-		tag.value = str(lat)
-		tag = metadata['Exif.GPSInfo.GPSLongitudeRef']
-		tag.value = lonside
-		tag = metadata['Exif.GPSInfo.GPSLongitude']
-		tag.value = str(lon)
-		metadata.write()
 
 try: 
 	import pexiv2	
-	PictureFile.writeExif = PictureFile.writeExifPyExiv
+	PictureFile = PyPictureFile
+	trace('pexiv2 available')
 except:	
 	#because after spending three nights I didnt manage to compile pyexiv2 under macosx
-	PictureFile.writeExif = PictureFile.writeExifTool
+	PictureFile = ExToolPictureFile
+	trace('pexiv2 not available, using exiftool')
 
 
 
@@ -202,10 +207,10 @@ def writeInfoToPictures(g, dir):
 			if g.isValidPictureFile(file):
 				trace(file + ' is a valid picture')
 				p = PictureFile(file)
-				n = p.getNumber()
+				n = p.getNumber()	#number from the name of the picture
 				if n == 0:
 					continue
-				r = g.getRange(n)
+				r = g.getRange(n)	#range the number belongs to
 				trace('Got range ' + repr(r))
 				p.writeExif(r.position)
 
@@ -219,6 +224,10 @@ def writeInfoToPictures(g, dir):
 def run():
 	global verbose
 	options = parseArguments()
+	if options.useExifTool:
+		trace('forcing to use exiftool')
+		PictureFile = ExToolPictureFile
+		
 	verbose = options.verbose
 	trace('verbose mode on')
 	g = GeoTagger(options)
