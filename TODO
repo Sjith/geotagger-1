@@ -1,9 +1,10 @@
-- context menu for range list
-- position date option
-- export to gpx option
-- move xml export to another thread
-- python on pc app
-- make the gui nicer
+- convert sqlite to Date() in utils
 - choose between gps and cell location or both
+- export to gpx option
+- test python on pc app with pyexiv library
+- make a gui for the python pc app
+- make the gui nicer
 - position name edit text on main page
+- context menu for range list
+- move xml export to another thread
 
