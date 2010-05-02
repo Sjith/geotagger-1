@@ -146,19 +146,19 @@ public class RangeElementEditor extends Activity {
 		int menuItemOrder = Menu.NONE;	 
 		int menuItemText = R.string.positions_name;
 
-		menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
+		menu.add(groupId, menuItemId, menuItemOrder, menuItemText).setIcon(R.drawable.posmenu);
 		
 		groupId = 0;
 		menuItemId = MENU_VIEW_RANGES;
 		menuItemOrder = Menu.NONE;	 
 		menuItemText = R.string.ranges_name;
 		
-		menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
+		menu.add(groupId, menuItemId, menuItemOrder, menuItemText).setIcon(R.drawable.rangesmenu);
 		
 		menuItemId = MENU_EXPORT_TO_XML;
 		menuItemOrder = Menu.NONE;	 
 		menuItemText = R.string.export_to_xml_name;
-		menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
+		menu.add(groupId, menuItemId, menuItemOrder, menuItemText).setIcon(R.drawable.exportxml);
 		
 		menuItemId = MENU_CLEAN_ALL;
 		menuItemOrder = Menu.NONE;	 
