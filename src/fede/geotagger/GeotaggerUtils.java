@@ -24,13 +24,4 @@ public class GeotaggerUtils {
     	return;    
 	}
 	
-	public static String getDbStringFromDate(Date d)
-	{
-		return "20" + DateFormat.format("yy-MM-dd", d).toString();
-	}
-	
-	public static Date getDateFromDbString(String s)
-	{
-		return new Date(); // TODO
-	}
 }

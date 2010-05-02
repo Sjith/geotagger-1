@@ -83,7 +83,7 @@ public class GeoDbAdapter {
     POSITION_LATITUDE_KEY + " string, " +
     POSITION_LONGITUDE_KEY + " string, " +
     POSITION_ALTITUDE_KEY + " string, " + 
-    POSITION_DATE_KEY + ");";
+    POSITION_DATE_KEY + " integer);";
     			
     			
   // Variable to hold the database instance
@@ -125,7 +125,7 @@ public class GeoDbAdapter {
   	    contentValues.put(POSITION_LONGITUDE_KEY, longitude);
   	  	contentValues.put(POSITION_ALTITUDE_KEY, altitude);
   		contentValues.put(POSITION_NAME_KEY, positionName);
-  		contentValues.put(POSITION_DATE_KEY, GeotaggerUtils.getDbStringFromDate(date));
+  		contentValues.put(POSITION_DATE_KEY, date.getTime());
   	    
 	   return db.insert(POSITION_TABLE, null, contentValues);
   }
@@ -194,7 +194,7 @@ public class GeoDbAdapter {
 			  res.getString(POSITION_LATITUDE_COLUMN),
 			  res.getString(POSITION_LONGITUDE_COLUMN),
 			  res.getString(POSITION_ALTITUDE_COLUMN),
-			  GeotaggerUtils.getDateFromDbString(res.getString(POSITION_DATE_COLUMN)));	
+			  new Date(res.getLong(POSITION_DATE_COLUMN)));	
 	  
 		  res.close();			
 		  return pos;
@@ -213,7 +213,7 @@ public class GeoDbAdapter {
     contentValues.put(POSITION_LONGITUDE_KEY, longitude);
   	contentValues.put(POSITION_ALTITUDE_KEY, altitude);
 	contentValues.put(POSITION_NAME_KEY, positionName);
-	contentValues.put(POSITION_DATE_KEY, GeotaggerUtils.getDbStringFromDate(date));
+	contentValues.put(POSITION_DATE_KEY, date.getTime());
     return db.update(POSITION_TABLE, contentValues, where, null);
   }
   
@@ -343,7 +343,7 @@ public class GeoDbAdapter {
 			  									  c.getString(first++),
 			  									  c.getString(first++),
 			  									  c.getString(first++),
-			  									  GeotaggerUtils.getDateFromDbString(c.getString(first++)));
+			  									  new Date(c.getLong(first++)));
 	  return res;
   }
 

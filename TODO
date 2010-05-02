@@ -1,4 +1,3 @@
-- convert sqlite to Date() in utils
 - choose between gps and cell location or both
 - export to gpx option
 - test python on pc app with pyexiv library
