@@ -11,6 +11,7 @@ public class Position {
 		return "Position-" + now.toString().substring(0, 16);		
 	}
 	
+	
 	public String getName() {
 		return name;
 	}
@@ -32,18 +33,29 @@ public class Position {
 	public String getAltitude() {
 		return altitude;
 	}
+	
+	public Date getDate() {
+		return date;
+	}
+	
+	public void setDate(Date d) {
+		date = d;
+	}
+	
 	public void setAltitude(String altitude) {
 		this.altitude = altitude;
 	}
 	public Position(String name, String latitude, String longitude,
-			String altitude) {
+			String altitude, Date d) {
 		super();
 		this.name = name;
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.altitude = altitude;
-		this.date = new Date();
+		this.date = d;
 	}
+	
+	
 	
 	public Position() {
 		this.name = "";
@@ -53,7 +65,8 @@ public class Position {
 		this.date = new Date();
 	}
 	
-	public Position(Location l)
+		
+	public Position(Location l, Date d)
 	{
 		Double lat = l.getLatitude();
 		Double lng = l.getLongitude();
@@ -62,8 +75,7 @@ public class Position {
 		this.latitude = lat.toString();
 		this.longitude = lng.toString();
 		this.altitude = alt.toString();;
-		this.date = new Date();
-		
+		this.date = d;
 	}
 	
 	private String name;

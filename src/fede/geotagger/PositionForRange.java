@@ -1,5 +1,7 @@
 package fede.geotagger;
 
+import java.util.Date;
+
 public class PositionForRange extends Position {
 	private Long from;
 	private Long to;
@@ -20,8 +22,8 @@ public class PositionForRange extends Position {
 		// TODO Auto-generated constructor stub
 	}
 	public PositionForRange(Long f, Long t, String name, String latitude, String longitude,
-			String altitude) {
-		super(name, latitude, longitude, altitude);
+			String altitude, Date d) {
+		super(name, latitude, longitude, altitude, d);
 		from = f;
 		to = t;
 	}

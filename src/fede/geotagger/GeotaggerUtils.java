@@ -1,12 +1,15 @@
 package fede.geotagger;
 
+import java.util.Date;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.text.format.DateFormat;
 
 public class GeotaggerUtils {
-	public void showErrorDialog(String errorString, String title, Context context)
+	public static void showErrorDialog(String errorString, String title, Context context)
 	{
     	String button1String = context.getString(R.string.ok_name); 
     	AlertDialog.Builder ad = new AlertDialog.Builder(context); 
@@ -19,5 +22,15 @@ public class GeotaggerUtils {
 	    						} });
     	ad.show();
     	return;    
+	}
+	
+	public static String getDbStringFromDate(Date d)
+	{
+		return "20" + DateFormat.format("yy-MM-dd", d).toString();
+	}
+	
+	public static Date getDateFromDbString(String s)
+	{
+		return new Date(); // TODO
 	}
 }

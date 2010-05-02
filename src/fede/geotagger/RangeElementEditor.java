@@ -1,8 +1,9 @@
 package fede.geotagger;
 
+import java.util.Date;
+
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
@@ -32,14 +33,12 @@ public class RangeElementEditor extends Activity {
 	
 	private GpsReadyIndicator mGpsReady;
 	private LocationUpdater mLUpdater;
-	private GeotaggerUtils mUtils;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.range_edit);
 		
-		mUtils = new GeotaggerUtils();
 		mChoosenPosition = (PositionListElem) findViewById(R.id.ChoosenPositionElem);
 		mFromRange = (EditText) findViewById(R.id.FromEditText);
 		mToRange = (EditText) findViewById(R.id.ToEditText);
@@ -200,13 +199,13 @@ public class RangeElementEditor extends Activity {
 	
 	private boolean autoAddNewPosition(){
 		if(mGpsReady.isOk() == false){
-			mUtils.showErrorDialog(getString(R.string.gps_not_ready_name), 
+			GeotaggerUtils.showErrorDialog(getString(R.string.gps_not_ready_name), 
 								   getString(R.string.error_name), 
 								   this);
 			return false;
 		}
 		Location l = mLUpdater.getLocation();
-		mPositionId = mDbHelper.addPosition(new Position(l));
+		mPositionId = mDbHelper.addPosition(new Position(l, new Date()));
 		return true;
 	}
 	
@@ -250,14 +249,14 @@ public class RangeElementEditor extends Activity {
 		}
 		
 		if(fromRange == 0 || toRange == 0){
-			mUtils.showErrorDialog(getString(R.string.invalid_range_name), 
+			GeotaggerUtils.showErrorDialog(getString(R.string.invalid_range_name), 
 								   getString(R.string.invalid_range_name),
 								   this);
 			return false;
 		}
 		
 		if(fromRange > toRange){
-			mUtils.showErrorDialog(getString(R.string.error_name), 
+			GeotaggerUtils.showErrorDialog(getString(R.string.error_name), 
 											 getString(R.string.invalid_range_name),
 											 this);
 			return false;
@@ -265,14 +264,14 @@ public class RangeElementEditor extends Activity {
 		
 		
 		if(mDbHelper.goodRangeBound(fromRange) == false){
-			mUtils.showErrorDialog(getString(R.string.error_name), 
+			GeotaggerUtils.showErrorDialog(getString(R.string.error_name), 
 					 getString(R.string.invalid_range_name),
 					 this);	
 			return false;
 		}
 		
 		if(mDbHelper.goodRangeBound(toRange) == false){
-			mUtils.showErrorDialog(getString(R.string.error_name), 
+			GeotaggerUtils.showErrorDialog(getString(R.string.error_name), 
 					 getString(R.string.invalid_range_name),
 					 this);
 			return false;
@@ -284,7 +283,7 @@ public class RangeElementEditor extends Activity {
 	private boolean checkAndAddRange()
 	{
 		if(mPositionId == null || mPositionId == 0){
-			mUtils.showErrorDialog(getString(R.string.error_name), 
+			GeotaggerUtils.showErrorDialog(getString(R.string.error_name), 
 								   getString(R.string.invalid_range_name),
 								   this);
 			return false;

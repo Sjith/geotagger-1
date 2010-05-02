@@ -1,5 +1,7 @@
 package fede.geotagger;
 
+import java.util.Date;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -61,7 +63,7 @@ public class PositionEditor extends Activity {
 			public void onClick(View view){
 				
 				// TODO check gps ready
-				Position pos = new Position(mLUpdater.getLocation());
+				Position pos = new Position(mLUpdater.getLocation(), new Date());
 				mAltitudeText.setText(pos.getAltitude());
 				mLatitudeText.setText(pos.getLatitude());
 				mLongitudeText.setText(pos.getLongitude());
@@ -75,13 +77,15 @@ public class PositionEditor extends Activity {
 				mPositionId = mDbHelper.addPosition(mPositionName.getText().toString(), 
 													mLatitudeText.getText().toString(), 
 													mLongitudeText.getText().toString(), 
-													mAltitudeText.getText().toString());
+													mAltitudeText.getText().toString(),
+													new Date());
 				}else{
 					mDbHelper.updatePosition(mPositionId, 
 											 mPositionName.getText().toString(), 
 											 mLatitudeText.getText().toString(), 
 											 mLongitudeText.getText().toString(), 
-								   			 mAltitudeText.getText().toString());
+								   			 mAltitudeText.getText().toString(),
+								   			 new Date());
 				}
 				Intent result = new Intent();
 				result.putExtra(GeoDbAdapter.POSITION_ID_KEY, mPositionId);

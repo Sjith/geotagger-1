@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Date;
 
 import org.xmlpull.v1.XmlSerializer;
 
@@ -22,7 +23,7 @@ import android.util.Xml;
 public class GeoDbAdapter {
   private static final String DATABASE_NAME = "geoDb.db";
   
-  private static final int DATABASE_VERSION = 4;
+  private static final int DATABASE_VERSION = 5;
   private static final String TAG = "DbHelper";
   private boolean mOpen;
  
@@ -54,6 +55,8 @@ public class GeoDbAdapter {
 	public static final int POSITION_LONGITUDE_COLUMN = 3;
 	public static final String POSITION_ALTITUDE_KEY = "Altitude";
 	public static final int POSITION_ALTITUDE_COLUMN = 4;
+	public static final String POSITION_DATE_KEY = "Date";
+	public static final int POSITION_DATE_COLUMN = 5;
 	public static final String POSITION_ROW_ID = "_id";	
 	
   // TODO: Create public field for each column in your table.
@@ -79,7 +82,8 @@ public class GeoDbAdapter {
     POSITION_NAME_KEY + " string, " + 
     POSITION_LATITUDE_KEY + " string, " +
     POSITION_LONGITUDE_KEY + " string, " +
-    POSITION_ALTITUDE_KEY + " string);";
+    POSITION_ALTITUDE_KEY + " string, " + 
+    POSITION_DATE_KEY + ");";
     			
     			
   // Variable to hold the database instance
@@ -114,20 +118,21 @@ public class GeoDbAdapter {
 
   // POSITION
   
-  public long addPosition(String positionName, String latitude, String longitude, String altitude)
+  public long addPosition(String positionName, String latitude, String longitude, String altitude, Date date)
   {
 	    ContentValues contentValues = new ContentValues();
   	    contentValues.put(POSITION_LATITUDE_KEY, latitude);
   	    contentValues.put(POSITION_LONGITUDE_KEY, longitude);
   	  	contentValues.put(POSITION_ALTITUDE_KEY, altitude);
   		contentValues.put(POSITION_NAME_KEY, positionName);
+  		contentValues.put(POSITION_DATE_KEY, GeotaggerUtils.getDbStringFromDate(date));
   	    
 	   return db.insert(POSITION_TABLE, null, contentValues);
   }
   
   public long addPosition(Position p)
   {
-	  return addPosition(p.getName(), p.getLatitude(), p.getLongitude(), p.getAltitude());
+	  return addPosition(p.getName(), p.getLatitude(), p.getLongitude(), p.getAltitude(), p.getDate());
   }
   
 
@@ -151,7 +156,8 @@ public class GeoDbAdapter {
     											  POSITION_NAME_KEY, 
     											  POSITION_LATITUDE_KEY,
     											  POSITION_LONGITUDE_KEY,
-    											  POSITION_ALTITUDE_KEY}, 
+    											  POSITION_ALTITUDE_KEY,
+    											  POSITION_DATE_KEY}, 
                     null, null, null, null, null);
   }
 
@@ -164,7 +170,8 @@ public class GeoDbAdapter {
     												 POSITION_NAME_KEY, 
 													 POSITION_LATITUDE_KEY,
 													 POSITION_LONGITUDE_KEY,
-													 POSITION_ALTITUDE_KEY}, ROW_ID + " = " + _rowIndex, 
+													 POSITION_ALTITUDE_KEY,
+													 POSITION_DATE_KEY}, ROW_ID + " = " + _rowIndex, 
     		null, null, null, null);
     
     if(res != null){
@@ -186,7 +193,8 @@ public class GeoDbAdapter {
 			  res.getString(POSITION_NAME_COLUMN),
 			  res.getString(POSITION_LATITUDE_COLUMN),
 			  res.getString(POSITION_LONGITUDE_COLUMN),
-			  res.getString(POSITION_ALTITUDE_COLUMN));	
+			  res.getString(POSITION_ALTITUDE_COLUMN),
+			  GeotaggerUtils.getDateFromDbString(res.getString(POSITION_DATE_COLUMN)));	
 	  
 		  res.close();			
 		  return pos;
@@ -197,7 +205,7 @@ public class GeoDbAdapter {
   	  
   
   
-  public int updatePosition(long _rowIndex, String positionName, String latitude, String longitude, String altitude) 
+  public int updatePosition(long _rowIndex, String positionName, String latitude, String longitude, String altitude, Date date) 
   {
     String where = POSITION_ROW_ID + " = " + _rowIndex;
     ContentValues contentValues = new ContentValues();
@@ -205,6 +213,7 @@ public class GeoDbAdapter {
     contentValues.put(POSITION_LONGITUDE_KEY, longitude);
   	contentValues.put(POSITION_ALTITUDE_KEY, altitude);
 	contentValues.put(POSITION_NAME_KEY, positionName);
+	contentValues.put(POSITION_DATE_KEY, GeotaggerUtils.getDbStringFromDate(date));
     return db.update(POSITION_TABLE, contentValues, where, null);
   }
   
@@ -333,7 +342,8 @@ public class GeoDbAdapter {
 			  									  c.getString(first++),
 			  									  c.getString(first++),
 			  									  c.getString(first++),
-			  									  c.getString(first++));
+			  									  c.getString(first++),
+			  									  GeotaggerUtils.getDateFromDbString(c.getString(first++)));
 	  return res;
   }
 
