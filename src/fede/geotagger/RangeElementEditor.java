@@ -168,6 +168,11 @@ public class RangeElementEditor extends Activity {
 		menuItemOrder = Menu.NONE;	 
 		menuItemText = R.string.clean_all_name;
 		menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
+
+		menuItemId = MENU_CLEAN_ALL;
+		menuItemOrder = Menu.NONE;	 
+		menuItemText = R.string.options_name;
+		menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
 		
 		return true;
 	}
