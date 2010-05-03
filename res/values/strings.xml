@@ -38,4 +38,6 @@
 <string name="gps_status_name">Gps Status</string>
 <string name="xml_exported_name">Xml exported</string>
 <string name="xml_failed_name">Xml creation failed</string>
+<string name="gps_error_name">Could not find valid position provider</string>
+
 </resources>

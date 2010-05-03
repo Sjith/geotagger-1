@@ -14,6 +14,12 @@ interface LocationInterface {
     void statusNotReady();
 }
 
+class LocationNotAvalaible extends Exception {
+    public LocationNotAvalaible() {
+        super("Location not available");
+    }
+
+}
 
 
 public class LocationUpdater {
@@ -28,7 +34,7 @@ public class LocationUpdater {
 	}
 	
 	public LocationUpdater(Context c, 
-			LocationInterface i)
+			LocationInterface i) throws LocationNotAvalaible
 	{
 		mInterface = i;
 		mLManager = (LocationManager)c.getSystemService(Context.LOCATION_SERVICE);
@@ -39,7 +45,11 @@ public class LocationUpdater {
 	    criteria.setBearingRequired(false);
 	    criteria.setCostAllowed(true);
 	    criteria.setPowerRequirement(Criteria.POWER_LOW);
-	    mLProvider = mLManager.getBestProvider(criteria, true);    	        
+	    mLProvider = mLManager.getBestProvider(criteria, true); 
+	    
+	    if(mLProvider == null){
+	    	throw new LocationNotAvalaible();
+	    }
     
 	    mLListener = new LocationListener() {
 	        public void onLocationChanged(Location location) {

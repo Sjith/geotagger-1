@@ -1,7 +1,9 @@
 - choose between gps and cell location or both
 - export to gpx option
 - test python on pc app with pyexiv library
+- choose existing position resets to initial values in range editor
 - make a gui for the python pc app
+- modify picture ranges / positions views
 - make the gui nicer
 - position name edit text on main page
 - context menu for range list

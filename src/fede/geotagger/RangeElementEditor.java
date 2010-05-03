@@ -82,14 +82,18 @@ public class RangeElementEditor extends Activity {
 	
 	private void setupLocationListener()
 	{
-		mLUpdater = new LocationUpdater(this, new LocationInterface(){
-		    public void statusReady (){
-		    	mGpsReady.statusOk();
-		    }
-		    public void statusNotReady(){
-		    	mGpsReady.statusKo();
-		    }			
-		});
+		try{
+			mLUpdater = new LocationUpdater(this, new LocationInterface(){
+				public void statusReady (){
+					mGpsReady.statusOk();
+				}
+				public void statusNotReady(){
+					mGpsReady.statusKo();
+				}			
+			});
+		} catch (Exception e){
+			GeotaggerUtils.showErrorDialog(getString(R.string.gps_error_name), getString(R.string.error_name), this);
+		}
 	}
 	
 
