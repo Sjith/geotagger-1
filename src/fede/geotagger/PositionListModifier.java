@@ -1,5 +1,6 @@
 package fede.geotagger;
 
+import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -10,7 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.SimpleCursorAdapter;
 
-public class PositionListModifier extends PositionList {
+public class PositionListModifier extends ListActivity{
 	static final private int MENU_ADD = Menu.FIRST;
 	static final private int MENU_EDIT = Menu.FIRST + 1;
 	static final private int MENU_DEL = Menu.FIRST + 2;
@@ -20,14 +21,17 @@ public class PositionListModifier extends PositionList {
     private static final int POSITION_EDIT = 1;
     
     private SimpleCursorAdapter mPositionsAdapter;
+    protected GeoDbAdapter mDbHelper;
 	
 	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        registerForContextMenu(getListView());
+        mDbHelper = new GeoDbAdapter(this);
+        mDbHelper.open();
         fillData();
+        registerForContextMenu(getListView());
     }
     
 	@Override
