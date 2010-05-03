@@ -289,12 +289,14 @@ public class GeoDbAdapter {
         newxmlfile.createNewFile();
       }catch(IOException e){
         Log.e("IOException", "exception in createNewFile() method");
+        return false;
       }
       FileOutputStream fileos = null;          
       try{
         fileos = new FileOutputStream(newxmlfile);
       }catch(FileNotFoundException e){
         Log.e("FileNotFoundException", "can't create FileOutputStream");
+        return false;
       }
 
       XmlSerializer serializer = Xml.newSerializer();
@@ -329,6 +331,7 @@ public class GeoDbAdapter {
              fileos.close();
         } catch (Exception e) {
              Log.e("Exception","error occurred while creating xml file");
+             return false;
         }
    
 	  return true;

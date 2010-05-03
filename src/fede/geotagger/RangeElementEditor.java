@@ -185,7 +185,11 @@ public class RangeElementEditor extends Activity {
 		    break;
 			}
 			case MENU_EXPORT_TO_XML:{
-				mDbHelper.storeToXml(getString(R.string.file_name_name));
+				if(mDbHelper.storeToXml(getString(R.string.file_name_name))){
+					GeotaggerUtils.showErrorDialog(getString(R.string.xml_exported_name), getString(R.string.export_to_xml_name), this);
+				}else{
+					GeotaggerUtils.showErrorDialog(getString(R.string.xml_failed_name), getString(R.string.export_to_xml_name), this);
+				}
 		    break;
 			}
 			case MENU_CLEAN_ALL:{

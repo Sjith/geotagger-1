@@ -36,4 +36,6 @@
 <string name="are_u_sure_to_clean_name">Are you sure to clean all?</string>
 <string name="gps_not_ready_name">Gps not ready yet</string>
 <string name="gps_status_name">Gps Status</string>
+<string name="xml_exported_name">Xml exported</string>
+<string name="xml_failed_name">Xml creation failed</string>
 </resources>
