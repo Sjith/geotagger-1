@@ -266,7 +266,8 @@ public class GeoDbAdapter {
 	  				 ", p." + POSITION_NAME_KEY +
 	  				 ", p." + POSITION_LATITUDE_KEY + 
 	  				 ", p." + POSITION_LONGITUDE_KEY +
-	  				 ", P." + POSITION_ALTITUDE_KEY + 
+	  				 ", P." + POSITION_ALTITUDE_KEY +
+	  				", P." + POSITION_DATE_KEY +
 	  				 " from " + RANGE_TABLE + " r , " + POSITION_TABLE + " p " +
 	  				 "where r." + POSITION_ID_KEY + " = " + "p." + POSITION_ROW_ID; 
 	  
