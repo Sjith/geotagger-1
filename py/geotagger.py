@@ -1,6 +1,6 @@
 from optparse import OptionParser
 from elementtree.ElementTree import Element, SubElement, dump, XML, parse, dump
-from bisect import bisect
+from bisect import bisect_left, bisect
 import re
 from os import listdir
 import os
@@ -34,19 +34,21 @@ class GeoTagger():
 		self.sort()
 		trace('trying to get valid range for ' + str(pictureNumber))
 
-		candidatePos = bisect(self.startRanges, pictureNumber)
+		trace('start ranges' + str(self.startRanges))
+		candidatePos = bisect(self.startRanges, long(pictureNumber))
+		trace('bisect res ' + str(pictureNumber) + ' pos' + str(candidatePos) + ' value ') 
 		if candidatePos == 0:
 			trace('not pos found for' + str(pictureNumber))
 			raise NotValidRange
-		if candidatePos == len(self.startRanges):	# out of last element. Gotta check last one
-			candidatePos = candidatePos - 1
+
+		candidatePos = candidatePos - 1
 			
 		candidateStart = self.startRanges[candidatePos]		#candidate start because need to check final element of range
 		trace('candidate start for ' + str(pictureNumber) + ' ' + str(candidateStart))
 		range = self.ranges[candidateStart]
 
 		if range.isSuitable(pictureNumber) == False:	#checks if candidate range is valid
-			trace('not valid range found for' + pictureNumber)
+			trace('not valid range found for' + str(pictureNumber))
 			raise NotValidRange
 		return range
 	
@@ -166,20 +168,13 @@ class ExToolPictureFile(BasePictureFile):
 			%(pos.fLong,pos.fLat,pos.longOrientation,pos.latOrientation,pos.fAltitude,self.name)
 		else:
 			command = 'exiftool.exe -m -overwrite_original -n -GPSLongitude=%f -GPSLatitude=%f \
-			-GPSLongitudeRef=%s -GPSLatitudeRef=%s -GPSAltitude=%s "%s"'\
-			%(lon,lat,longRef,latRef,alt,self.name)
+			-GPSLongitudeRef=%s -GPSLatitudeRef=%s -GPSAltitude=%f "%s"'\
+			%(pos.fLong,pos.fLat,pos.longOrientation,pos.latOrientation,pos.fAltitude,self.name)
 		trace('Executing ' + command)
 		os.popen(command)
 
 
-try: 
-	import pexiv2	
-	PictureFile = PyPictureFile
-	trace('pexiv2 available')
-except:	
-	#because after spending three nights I didnt manage to compile pyexiv2 under macosx
-	PictureFile = ExToolPictureFile
-	trace('pexiv2 not available, using exiftool')
+PictureFile = ExToolPictureFile
 
 
 
