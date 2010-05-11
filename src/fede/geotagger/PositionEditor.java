@@ -4,6 +4,7 @@ import java.util.Date;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -15,7 +16,8 @@ public class PositionEditor extends Activity {
 	protected void onPause() {
 		super.onPause();
 		mDbHelper.close();
-		mLUpdater.stopUpdating();
+		mPositionProvider.disableProvider(LocationManager.GPS_PROVIDER);
+		mPositionProvider.disableProvider(LocationManager.NETWORK_PROVIDER);
 	}
 
 	@Override
@@ -23,7 +25,8 @@ public class PositionEditor extends Activity {
 		super.onResume();
 		mDbHelper.open();
 		populateFields();
-		mLUpdater.startUpdating();	
+		mPositionProvider.enableProvider(LocationManager.GPS_PROVIDER);
+		mPositionProvider.enableProvider(LocationManager.NETWORK_PROVIDER);	
 	}
 
 	
@@ -33,8 +36,8 @@ public class PositionEditor extends Activity {
 	private TextView mAltitudeText;
 	private TextView mLatitudeText;
 	private TextView mLongitudeText;
-	LocationUpdater mLUpdater;
 	private GpsReadyIndicator mGpsReady;
+	private PositionProvider mPositionProvider;
 	
 	
 	@Override
@@ -62,8 +65,13 @@ public class PositionEditor extends Activity {
 		updatePosButton.setOnClickListener(new View.OnClickListener(){
 			public void onClick(View view){
 				
-				// TODO check gps ready
-				Position pos = new Position(mLUpdater.getLocation(), new Date());
+				if(mGpsReady.isValidPosition() == false){
+					GeotaggerUtils.showErrorDialog(getString(R.string.error_name), 
+												   getString(R.string.gps_not_ready_name),
+												   view.getContext());
+					return;
+				}
+				Position pos = new Position(mPositionProvider.getCurrentLocation(), new Date());
 				mAltitudeText.setText(pos.getAltitude());
 				mLatitudeText.setText(pos.getLatitude());
 				mLongitudeText.setText(pos.getLongitude());
@@ -106,19 +114,25 @@ public class PositionEditor extends Activity {
 
 	private void setupLocationListener()
 	{
-		try{
-			mLUpdater = new LocationUpdater(this, new LocationInterface(){
-			    public void statusReady (){
-			    	mGpsReady.statusOk();
-			    }
-			    public void statusNotReady(){
-			    	mGpsReady.statusKo();
-			    }			
-			});
-		} catch (Exception e){
-			GeotaggerUtils.showErrorDialog(getString(R.string.gps_error_name), getString(R.string.error_name), this);
-		}
-	}	
+		LocationInterface gpsInterface = new LocationInterface(){
+		    public void statusReady (){
+		    	mGpsReady.setGpsStatusOk();
+		    }
+		    public void statusNotReady(){
+		    	mGpsReady.setGpsStatusKo();
+		    }			
+		};
+		
+		LocationInterface cellInterface = new LocationInterface(){
+			public void statusReady (){
+				mGpsReady.setCellStatusOk();
+			}
+			public void statusNotReady(){
+				mGpsReady.setCellStatusKo();
+			}			
+		};
+		mPositionProvider = new PositionProvider(this, gpsInterface, cellInterface);
+	}
 	
 	private void populateFields()
 	{

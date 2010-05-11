@@ -7,8 +7,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class GpsReadyIndicator extends LinearLayout{
-	private TextView mGpsStatus;
-	private boolean mStatus;
+	private TextView mGpsStatusText;
+	private boolean mGpsStatus;
+	private boolean mCellStatus;
 	
 	
 	public GpsReadyIndicator(Context context, AttributeSet attr){
@@ -17,20 +18,43 @@ public class GpsReadyIndicator extends LinearLayout{
 		LayoutInflater li; 
 		li = (LayoutInflater)getContext().getSystemService(infService); 
 		li.inflate(R.layout.gps_ready_token, this, true);
-		mGpsStatus = (TextView) findViewById(R.id.GpsReadyText);
-		statusKo();
+		mGpsStatusText = (TextView) findViewById(R.id.GpsReadyText);
+		setGpsStatusKo();
 	}
 	
-	public void statusOk(){
-		mGpsStatus.setBackgroundColor(getResources().getColor(R.color.gps_ready_color));
-		mStatus = true;
+	public void setGpsStatusOk(){
+		mGpsStatusText.setBackgroundColor(getResources().getColor(R.color.gps_ready_color));
+		mGpsStatus = true;
 	}
-	public void statusKo(){
-		mGpsStatus.setBackgroundColor(getResources().getColor(R.color.gps_notready_color));
-		mStatus = false;
+	
+	public void setGpsStatusKo(){
+		if(mCellStatus == true){
+			mGpsStatusText.setBackgroundColor(getResources().getColor(R.color.gps_almost_ready_color));
+		}else{
+			mGpsStatusText.setBackgroundColor(getResources().getColor(R.color.gps_notready_color));
+		}
+		mGpsStatus = false;
 	}
-	public boolean isOk()
+	
+	public void setCellStatusOk()
 	{
-		return mStatus;
+		mCellStatus = true;
+		if(mGpsStatus == true){
+			mGpsStatusText.setBackgroundColor(getResources().getColor(R.color.gps_ready_color));
+		}else{
+			mGpsStatusText.setBackgroundColor(getResources().getColor(R.color.gps_almost_ready_color));
+		}
+	}
+	
+	public void setCellStatusKo(){
+		if(mGpsStatus == false){
+			mGpsStatusText.setBackgroundColor(getResources().getColor(R.color.gps_notready_color));
+		}
+		mCellStatus = false;
+	}
+	
+	public boolean isValidPosition()
+	{
+		return mGpsStatus || mCellStatus;
 	}
 }

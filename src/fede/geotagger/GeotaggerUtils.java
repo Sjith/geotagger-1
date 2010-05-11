@@ -1,12 +1,9 @@
 package fede.geotagger;
 
-import java.util.Date;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.text.format.DateFormat;
 
 public class GeotaggerUtils {
 	public static void showErrorDialog(String errorString, String title, Context context)

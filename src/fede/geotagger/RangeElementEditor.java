@@ -8,7 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
 import android.database.Cursor;
-import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,7 +32,7 @@ public class RangeElementEditor extends Activity {
 	private PositionListElem mChoosenPosition;
 	
 	private GpsReadyIndicator mGpsReady;
-	private LocationUpdater mLUpdater;
+	private PositionProvider mPositionProvider;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +61,8 @@ public class RangeElementEditor extends Activity {
 	@Override
 	protected void onPause() {		
 		super.onPause();
-		mLUpdater.stopUpdating();
+		mPositionProvider.disableProvider(LocationManager.GPS_PROVIDER);
+		mPositionProvider.disableProvider(LocationManager.NETWORK_PROVIDER);
 		mDbHelper.close();
 	}
 
@@ -70,7 +71,8 @@ public class RangeElementEditor extends Activity {
 		super.onResume();
 		mDbHelper.open();
 		populateFields();
-		mLUpdater.startUpdating();		
+		mPositionProvider.enableProvider(LocationManager.GPS_PROVIDER);
+		mPositionProvider.enableProvider(LocationManager.NETWORK_PROVIDER);
 	}
 
 	@Override
@@ -82,20 +84,28 @@ public class RangeElementEditor extends Activity {
 	
 	private void setupLocationListener()
 	{
-		try{
-			mLUpdater = new LocationUpdater(this, new LocationInterface(){
-				public void statusReady (){
-					mGpsReady.statusOk();
-				}
-				public void statusNotReady(){
-					mGpsReady.statusKo();
-				}			
-			});
-		} catch (Exception e){
-			GeotaggerUtils.showErrorDialog(getString(R.string.gps_error_name), getString(R.string.error_name), this);
-		}
+		LocationInterface gpsInterface = new LocationInterface(){
+		    public void statusReady (){
+		    	mGpsReady.setGpsStatusOk();
+		    }
+		    public void statusNotReady(){
+		    	mGpsReady.setGpsStatusKo();
+		    }			
+		};
+		
+		LocationInterface cellInterface = new LocationInterface(){
+			public void statusReady (){
+				mGpsReady.setCellStatusOk();
+			}
+			public void statusNotReady(){
+				mGpsReady.setCellStatusKo();
+			}			
+		};
+		mPositionProvider = new PositionProvider(this, gpsInterface, cellInterface);
 	}
 	
+
+
 
 
 	private void setupButtons()
@@ -211,14 +221,14 @@ public class RangeElementEditor extends Activity {
 	}
 	
 	private boolean autoAddNewPosition(){
-		if(mGpsReady.isOk() == false){
+		if(mGpsReady.isValidPosition() == false){
 			GeotaggerUtils.showErrorDialog(getString(R.string.gps_not_ready_name), 
 								   getString(R.string.error_name), 
 								   this);
 			return false;
 		}
-		Location l = mLUpdater.getLocation();
-		mPositionId = mDbHelper.addPosition(new Position(l, new Date()));
+		
+		mPositionId = mDbHelper.addPosition(new Position(mPositionProvider.getCurrentLocation(), new Date()));
 		return true;
 	}
 	
