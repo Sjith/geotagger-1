@@ -21,8 +21,11 @@ public class RangeElementEditor extends Activity {
 	static final private int MENU_VIEW_RANGES = Menu.FIRST + 1;
 	static final private int MENU_EXPORT_TO_XML = Menu.FIRST + 2;
 	static final private int MENU_CLEAN_ALL = Menu.FIRST + 3;
+	static final private int MENU_OPTIONS = Menu.FIRST + 4;
 	
 	static final private int CHOOSE_POSITION_ACTION = 1;
+	static final private int SHOW_PREFERENCES = 2;
+	
 	
 	private EditText mFromRange;
 	private EditText mToRange;
@@ -30,6 +33,8 @@ public class RangeElementEditor extends Activity {
 	private Long mPositionId;
 	private Long mRangeRowId;
 	private PositionListElem mChoosenPosition;
+	private boolean mEnableGps;
+	private boolean mEnableCell;
 	
 	private GpsReadyIndicator mGpsReady;
 	private PositionProvider mPositionProvider;
@@ -53,16 +58,23 @@ public class RangeElementEditor extends Activity {
 		mRangeRowId = extras != null ? extras.getLong(GeoDbAdapter.ROW_ID) 
 		        : null;
 		
+		GeotaggerUtils.getPreferences(this, mEnableGps, mEnableCell);
+		
 		setupLocationListener();
 		setupButtons();		
 		
 	}
 	
+	
 	@Override
 	protected void onPause() {		
 		super.onPause();
-		mPositionProvider.disableProvider(LocationManager.GPS_PROVIDER);
-		mPositionProvider.disableProvider(LocationManager.NETWORK_PROVIDER);
+		if(mEnableGps){
+			mPositionProvider.disableProvider(LocationManager.GPS_PROVIDER);
+		}
+		if(mEnableCell){
+			mPositionProvider.disableProvider(LocationManager.NETWORK_PROVIDER);
+		}
 		mDbHelper.close();
 	}
 
@@ -71,8 +83,13 @@ public class RangeElementEditor extends Activity {
 		super.onResume();
 		mDbHelper.open();
 		populateFields();
-		mPositionProvider.enableProvider(LocationManager.GPS_PROVIDER);
-		mPositionProvider.enableProvider(LocationManager.NETWORK_PROVIDER);
+		GeotaggerUtils.getPreferences(this, mEnableGps, mEnableCell);
+		if(mEnableGps){
+			mPositionProvider.enableProvider(LocationManager.GPS_PROVIDER);
+		}
+		if(mEnableCell){
+			mPositionProvider.enableProvider(LocationManager.NETWORK_PROVIDER);
+		}
 	}
 
 	@Override
@@ -104,10 +121,6 @@ public class RangeElementEditor extends Activity {
 		mPositionProvider = new PositionProvider(this, gpsInterface, cellInterface);
 	}
 	
-
-
-
-
 	private void setupButtons()
 	{
 		// BUTTONS
@@ -179,7 +192,7 @@ public class RangeElementEditor extends Activity {
 		menuItemText = R.string.clean_all_name;
 		menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
 
-		menuItemId = MENU_CLEAN_ALL;
+		menuItemId = MENU_OPTIONS;
 		menuItemOrder = Menu.NONE;	 
 		menuItemText = R.string.options_name;
 		menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
@@ -214,6 +227,10 @@ public class RangeElementEditor extends Activity {
 			case MENU_CLEAN_ALL:{
 				cleanAll();
 		    break;
+			}
+			case MENU_OPTIONS:{
+				Intent i = new Intent(this, GeoPreferences.class); 
+				startActivityForResult(i, SHOW_PREFERENCES);
 			}
 		}
 	

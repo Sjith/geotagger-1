@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?> <PreferenceScreen
+xmlns:android="http://schemas.android.com/apk/res/android"> 
+<CheckBoxPreference
+android:key="PREF_ENABLE_GPS" android:title="@string/gps_enabled_name" android:summary="@string/gps_enabled_summary" android:defaultValue="true"
+/> 
+<CheckBoxPreference
+android:key="PREF_ENABLE_CELL" android:title="@string/cell_enabled_name" android:summary="@string/cell_enabled_summary" android:defaultValue="true"
+/> 
+</PreferenceScreen>

@@ -40,5 +40,9 @@
 <string name="xml_failed_name">Xml creation failed</string>
 <string name="gps_error_name">Could not find valid position provider</string>
 <string name="options_name">Settings</string>
+<string name="gps_enabled_name">Enable Gps</string>
+<string name="gps_enabled_summary">Check this to enable gps</string>
+<string name="cell_enabled_name">Enable Cell Location</string>
+<string name="cell_enabled_summary">Check this to enable cell location</string>
 
 </resources>

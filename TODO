@@ -8,4 +8,5 @@
 - position name edit text on main page
 - context menu for range list
 - move xml export to another thread
+- profile memory usage to look for memory leaks
 

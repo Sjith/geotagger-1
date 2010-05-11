@@ -16,6 +16,8 @@
 	<activity android:name=".PositionEditor"></activity>
 	<activity android:name=".PositionList"></activity>
 	<activity android:name=".PositionListModifier"></activity>
+	<activity android:name=".GeoPreferences" android:label="Preferences">
+</activity>
 </application>
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/> 
 <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
