@@ -20,8 +20,9 @@ public class RangeElementEditor extends Activity {
 	static final private int MENU_VIEW_POSITIONS = Menu.FIRST;
 	static final private int MENU_VIEW_RANGES = Menu.FIRST + 1;
 	static final private int MENU_EXPORT_TO_XML = Menu.FIRST + 2;
-	static final private int MENU_CLEAN_ALL = Menu.FIRST + 3;
+	static final private int MENU_EXPORT_TO_GPX = Menu.FIRST + 3;	
 	static final private int MENU_OPTIONS = Menu.FIRST + 4;
+	static final private int MENU_CLEAN_ALL = Menu.FIRST + 5;
 	
 	static final private int CHOOSE_POSITION_ACTION = 1;
 	static final private int SHOW_PREFERENCES = 2;
@@ -181,6 +182,12 @@ public class RangeElementEditor extends Activity {
 		menuItemOrder = Menu.NONE;	 
 		menuItemText = R.string.export_to_xml_name;
 		menu.add(groupId, menuItemId, menuItemOrder, menuItemText).setIcon(R.drawable.exportxml);
+
+		menuItemId = MENU_EXPORT_TO_GPX;
+		menuItemOrder = Menu.NONE;	 
+		menuItemText = R.string.export_to_gpx_name;
+		menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
+		
 		
 		menuItemId = MENU_CLEAN_ALL;
 		menuItemOrder = Menu.NONE;	 
@@ -213,6 +220,14 @@ public class RangeElementEditor extends Activity {
 			}
 			case MENU_EXPORT_TO_XML:{
 				if(mDbHelper.storeToXml(getString(R.string.file_name_name))){
+					GeotaggerUtils.showErrorDialog(getString(R.string.xml_exported_name), getString(R.string.export_to_xml_name), this);
+				}else{
+					GeotaggerUtils.showErrorDialog(getString(R.string.xml_failed_name), getString(R.string.export_to_xml_name), this);
+				}
+		    break;
+			}
+			case MENU_EXPORT_TO_GPX:{
+				if(mDbHelper.storeToGpx(getString(R.string.gpx_file_name))){
 					GeotaggerUtils.showErrorDialog(getString(R.string.xml_exported_name), getString(R.string.export_to_xml_name), this);
 				}else{
 					GeotaggerUtils.showErrorDialog(getString(R.string.xml_failed_name), getString(R.string.export_to_xml_name), this);

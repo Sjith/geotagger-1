@@ -1,4 +1,4 @@
-- export to gpx option
+- export to gpx option - correct the date format
 - new icons
 - test python on pc app with pyexiv library
 - choose existing position resets to initial values in range editor

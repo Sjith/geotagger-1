@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.xmlpull.v1.XmlSerializer;
@@ -189,12 +190,7 @@ public class GeoDbAdapter {
 	  res.moveToFirst();
 	  
 	  if(res != null){
-		  Position pos = new Position(
-			  res.getString(POSITION_NAME_COLUMN),
-			  res.getString(POSITION_LATITUDE_COLUMN),
-			  res.getString(POSITION_LONGITUDE_COLUMN),
-			  res.getString(POSITION_ALTITUDE_COLUMN),
-			  new Date(res.getLong(POSITION_DATE_COLUMN)));	
+		  Position pos = fetchPosition(res);
 	  
 		  res.close();			
 		  return pos;
@@ -274,6 +270,75 @@ public class GeoDbAdapter {
 	  Cursor c = db.rawQuery(query, null); 
 	  return c;
   }
+
+  public boolean storeToGpx(String fileName)
+  {
+	  Cursor positionsCursor = getAllPositions();
+	  if(positionsCursor.getCount() <= 0)
+		  return false;
+	  
+	  if(positionsCursor.moveToFirst() == false)
+		  return false;
+	  	  
+	  File newxmlfile = new File(Environment.getExternalStorageDirectory()+"/"+fileName);
+      try{
+        newxmlfile.createNewFile();
+      }catch(IOException e){
+        Log.e("IOException", "exception in createNewFile() method");
+        return false;
+      }
+      FileOutputStream fileos = null;          
+      try{
+        fileos = new FileOutputStream(newxmlfile);
+      }catch(FileNotFoundException e){
+        Log.e("FileNotFoundException", "can't create FileOutputStream");
+        return false;
+      }
+
+      XmlSerializer serializer = Xml.newSerializer();
+      try {
+
+             serializer.setOutput(fileos, "UTF-8");
+             //Write <?xml declaration with encoding (if encoding not null) and standalone flag (if standalone not null)
+             serializer.startDocument(null, Boolean.valueOf(true));
+             //set indentation option
+             serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
+             
+             serializer.startTag(null, "gpx");
+             
+             do{
+            	 Position p = fetchPosition(positionsCursor);
+                  
+                  serializer.startTag(null, "wpt");
+                  serializer.attribute(null, "lat", p.getLatitude());
+                  serializer.attribute(null, "lon", p.getLongitude());
+                  	serializer.startTag(null, "ele");
+                  		serializer.text(p.getAltitude());
+                  	serializer.endTag(null, "ele");
+                  	serializer.startTag(null, "name");
+              			serializer.text(p.getName());
+              		serializer.endTag(null, "name");
+              		serializer.startTag(null, "time");
+          				serializer.text(p.getDate().toGMTString());	// TODO this is not the expected format
+          			serializer.endTag(null, "time");
+                  serializer.endTag(null, "wpt");
+                   
+             
+             } while (positionsCursor.moveToNext());     
+             serializer.endTag(null, "gpx");
+             serializer.endDocument();
+             //write xml data into the FileOutputStream
+             serializer.flush();
+             //finally we close the file stream
+             fileos.close();
+        } catch (Exception e) {
+             Log.e("Exception","error occurred while creating xml file");
+             return false;
+        }
+   
+	  return true;
+  }
+  
   
   public boolean storeToXml(String fileName)
   {
@@ -351,7 +416,14 @@ public class GeoDbAdapter {
 	  return res;
   }
 
-  
+  public Position fetchPosition(Cursor c)
+  {
+	  return new Position( c.getString(POSITION_NAME_COLUMN),
+			  			   c.getString(POSITION_LATITUDE_COLUMN),
+			  			   c.getString(POSITION_LONGITUDE_COLUMN),
+			  			   c.getString(POSITION_ALTITUDE_COLUMN),
+			  			   new Date(c.getLong(POSITION_DATE_COLUMN)));	  	  
+  }
     
   public Cursor getRange(long _rowIndex) {
     
