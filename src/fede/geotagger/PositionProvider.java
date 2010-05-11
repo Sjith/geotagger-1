@@ -3,6 +3,7 @@ package fede.geotagger;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
+import android.util.Log;
 
 
 
@@ -35,6 +36,7 @@ public class PositionProvider {
 		if(provider == LocationManager.NETWORK_PROVIDER){
 			mCellUpdater.startUpdating();
 		}
+		Log.d("LOC", provider + " enabled");
 	}
 	
 	public void disableProvider(String provider)
@@ -45,6 +47,7 @@ public class PositionProvider {
 		if(provider == LocationManager.NETWORK_PROVIDER){
 			mCellUpdater.stopUpdating();
 		}
+		Log.d("LOC", provider + " disabled");
 	}
 	
 

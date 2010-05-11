@@ -66,10 +66,12 @@ public class LocationUpdater {
 	public void stopUpdating()
 	{
 		mLManager.removeUpdates(mLListener);
+		mInterface.statusNotReady();	// for obvious reasons
 	}
 	
 	public void startUpdating()
 	{
+		mInterface.statusNotReady();	// it will get back ready whenever the location is available
 		mLManager.requestLocationUpdates(mLProvider, 10000, 0, mLListener);
 	}
 };

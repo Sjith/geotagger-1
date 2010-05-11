@@ -16,8 +16,14 @@ public class PositionEditor extends Activity {
 	protected void onPause() {
 		super.onPause();
 		mDbHelper.close();
-		mPositionProvider.disableProvider(LocationManager.GPS_PROVIDER);
-		mPositionProvider.disableProvider(LocationManager.NETWORK_PROVIDER);
+		
+		Preferences pref = GeotaggerUtils.getPreferences(this);
+		if(pref.isGpsEnabled()){
+			mPositionProvider.disableProvider(LocationManager.GPS_PROVIDER);
+		}
+		if(pref.isCellEnabled()){
+			mPositionProvider.disableProvider(LocationManager.NETWORK_PROVIDER);
+		}
 	}
 
 	@Override
@@ -25,8 +31,13 @@ public class PositionEditor extends Activity {
 		super.onResume();
 		mDbHelper.open();
 		populateFields();
-		mPositionProvider.enableProvider(LocationManager.GPS_PROVIDER);
-		mPositionProvider.enableProvider(LocationManager.NETWORK_PROVIDER);	
+		Preferences pref = GeotaggerUtils.getPreferences(this);
+		if(pref.isGpsEnabled()){
+			mPositionProvider.enableProvider(LocationManager.GPS_PROVIDER);
+		}
+		if(pref.isCellEnabled()){
+			mPositionProvider.enableProvider(LocationManager.NETWORK_PROVIDER);
+		}
 	}
 
 	

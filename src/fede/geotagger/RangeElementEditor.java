@@ -33,8 +33,7 @@ public class RangeElementEditor extends Activity {
 	private Long mPositionId;
 	private Long mRangeRowId;
 	private PositionListElem mChoosenPosition;
-	private boolean mEnableGps;
-	private boolean mEnableCell;
+
 	
 	private GpsReadyIndicator mGpsReady;
 	private PositionProvider mPositionProvider;
@@ -48,31 +47,27 @@ public class RangeElementEditor extends Activity {
 		mFromRange = (EditText) findViewById(R.id.FromEditText);
 		mToRange = (EditText) findViewById(R.id.ToEditText);
 		mGpsReady = (GpsReadyIndicator) findViewById(R.id.GpsReadyElemEditor);
-			
 		mDbHelper = new GeoDbAdapter(this);
         
 		
         Intent i = getIntent();
-        
-		Bundle extras = i.getExtras();            
+  		Bundle extras = i.getExtras();            
 		mRangeRowId = extras != null ? extras.getLong(GeoDbAdapter.ROW_ID) 
 		        : null;
-		
-		GeotaggerUtils.getPreferences(this, mEnableGps, mEnableCell);
-		
+				
 		setupLocationListener();
-		setupButtons();		
-		
+		setupButtons();			
 	}
 	
 	
 	@Override
 	protected void onPause() {		
 		super.onPause();
-		if(mEnableGps){
+		Preferences pref = GeotaggerUtils.getPreferences(this);
+		if(pref.isGpsEnabled()){
 			mPositionProvider.disableProvider(LocationManager.GPS_PROVIDER);
 		}
-		if(mEnableCell){
+		if(pref.isCellEnabled()){
 			mPositionProvider.disableProvider(LocationManager.NETWORK_PROVIDER);
 		}
 		mDbHelper.close();
@@ -83,11 +78,11 @@ public class RangeElementEditor extends Activity {
 		super.onResume();
 		mDbHelper.open();
 		populateFields();
-		GeotaggerUtils.getPreferences(this, mEnableGps, mEnableCell);
-		if(mEnableGps){
+		Preferences pref = GeotaggerUtils.getPreferences(this);
+		if(pref.isGpsEnabled()){
 			mPositionProvider.enableProvider(LocationManager.GPS_PROVIDER);
 		}
-		if(mEnableCell){
+		if(pref.isCellEnabled()){
 			mPositionProvider.enableProvider(LocationManager.NETWORK_PROVIDER);
 		}
 	}

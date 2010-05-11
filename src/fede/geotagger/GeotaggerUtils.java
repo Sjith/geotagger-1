@@ -7,9 +7,7 @@ import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
 import android.preference.PreferenceManager;
 
-public class GeotaggerUtils {
-	static final private String PREFERENCES = "PREFS";
-	
+public class GeotaggerUtils {	
 	public static void showErrorDialog(String errorString, String title, Context context)
 	{
     	String button1String = context.getString(R.string.ok_name); 
@@ -25,11 +23,12 @@ public class GeotaggerUtils {
     	return;    
 	}
 	
-	public static void getPreferences(Context c, boolean enableGpsOut, boolean enableCellOut)
+	public static Preferences getPreferences(Context c)
 	{
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
-		enableGpsOut = prefs.getBoolean("PREF_ENABLE_GPS", false);
-		enableCellOut = prefs.getBoolean("PREF_ENABLE_CELL", false);	
+		
+		return new Preferences (prefs.getBoolean("PREF_ENABLE_GPS", false),
+								prefs.getBoolean("PREF_ENABLE_CELL", false));	
 	}
 	
 	

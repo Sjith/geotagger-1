@@ -1,5 +1,5 @@
-- choose between gps and cell location or both
 - export to gpx option
+- new icons
 - test python on pc app with pyexiv library
 - choose existing position resets to initial values in range editor
 - make a gui for the python pc app
