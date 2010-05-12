@@ -8,7 +8,9 @@
         <TextView
          android:id="@+id/position_elem_name"
          android:layout_width="fill_parent"
-     android:layout_height="wrap_content" />
+     android:layout_height="wrap_content"
+          android:textColor="@color/text_color"
+      />
     </TableRow>
 <TableRow>
         <TextView
@@ -19,16 +21,20 @@
         <TextView
          android:id="@+id/position_elem_latitude"
          android:layout_width="fill_parent"
-     android:layout_height="wrap_content" />
+     android:layout_height="wrap_content" 
+     android:textColor="@color/text_color" />
     </TableRow>
 <TableRow>
         <TextView
             android:text="@string/longitude_name"
             android:padding="3dip" 
-            android:textColor="@color/position_indicator_color"/>
+            android:textColor="@color/position_indicator_color"
+            />
         <TextView
          android:id="@+id/position_elem_longitude" 
          android:layout_width="fill_parent"
-     android:layout_height="wrap_content" />
+     android:layout_height="wrap_content" 
+     android:textColor="@color/text_color"
+     />
     </TableRow>
 </TableLayout>

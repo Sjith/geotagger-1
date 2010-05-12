@@ -186,7 +186,7 @@ public class RangeElementEditor extends Activity {
 		menuItemId = MENU_EXPORT_TO_GPX;
 		menuItemOrder = Menu.NONE;	 
 		menuItemText = R.string.export_to_gpx_name;
-		menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
+		menu.add(groupId, menuItemId, menuItemOrder, menuItemText).setIcon(R.drawable.exportxml);
 		
 		
 		menuItemId = MENU_CLEAN_ALL;
@@ -197,7 +197,7 @@ public class RangeElementEditor extends Activity {
 		menuItemId = MENU_OPTIONS;
 		menuItemOrder = Menu.NONE;	 
 		menuItemText = R.string.options_name;
-		menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
+		menu.add(groupId, menuItemId, menuItemOrder, menuItemText).setIcon(android.R.drawable.ic_menu_preferences);
 		
 		return true;
 	}

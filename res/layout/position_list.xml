@@ -3,11 +3,15 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="@color/background_color"
     >
 <TextView  
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content" 
     android:text="@string/positions_name"
+    android:textColor="@color/text_color"
+    android:textSize="30dip"
+    android:gravity="center_horizontal"
     />
 <ListView android:id="@android:id/list" 
 		android:layout_width="wrap_content" 

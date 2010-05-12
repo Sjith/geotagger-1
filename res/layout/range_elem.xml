@@ -1,27 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/background_color"
+    >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
     android:layout_height="fill_parent"
+    android:background="@color/background_color"
+    android:layout_gravity="center_horizontal"
     >
 <TextView  
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content" 
-    android:text="@string/from_name"
-    />
+    android:text="[ "
+    android:textSize="25dip"
+    android:textColor="@color/text_color"
+    
+    />    
 <TextView  
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content" 
     android:id="@+id/range_elem_from"
-    android:paddingLeft="2px" android:capitalize="none" android:paddingRight="2px"/>
+    android:textSize="25dip"
+    android:textColor="@color/text_color"
+    android:paddingLeft="2dip" android:capitalize="none" android:paddingRight="2px"/>
 <TextView  
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content" 
-    android:text="@string/to_name"
+    android:text=" / "
+    android:textSize="25dip"
+    android:textColor="@color/text_color"
+    
     />
 <TextView  
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content" 
     android:id="@+id/range_elem_to"
-    android:paddingLeft="2px"/>
+    android:textSize="25dip"
+    android:paddingLeft="2dip"
+	android:gravity="center_horizontal"
+    android:textColor="@color/text_color"/>
+<TextView  
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content" 
+    android:text=" ]"
+    android:textSize="25dip"
+    android:textColor="@color/text_color"
+    
+    />    
+</LinearLayout>
+<View android:layout_height="2dip" android:layout_width="fill_parent" android:background="#FF909090"/>
 </LinearLayout>
