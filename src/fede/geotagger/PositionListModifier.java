@@ -28,6 +28,7 @@ public class PositionListModifier extends ListActivity{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.position_list);
         mDbHelper = new GeoDbAdapter(this);
         mDbHelper.open();
         fillData();

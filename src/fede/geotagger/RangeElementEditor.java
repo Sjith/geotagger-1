@@ -394,6 +394,7 @@ public class RangeElementEditor extends Activity {
     						 new OnClickListener() { 
 	    						public void onClick(DialogInterface dialog, int arg1) {
 	    							mDbHelper.removeAll();
+	    							populateFields();
 	    						} });
     	
     	ad.setNegativeButton(button2String, 

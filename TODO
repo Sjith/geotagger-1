@@ -1,12 +1,9 @@
-- export to gpx option - correct the date format
 - new icons
 - test python on pc app with pyexiv library
-- choose existing position resets to initial values in range editor
 - make a gui for the python pc app
-- modify picture ranges / positions views
-- make the gui nicer
 - position name edit text on main page
 - context menu for range list
 - move xml export to another thread
 - profile memory usage to look for memory leaks
-
+- disable add live position while editing from range list 
+- choose output file name

@@ -270,6 +270,20 @@ public class GeoDbAdapter {
 	  Cursor c = db.rawQuery(query, null); 
 	  return c;
   }
+  
+  private String getGpxStringDate(Date d)
+  {
+	  Calendar c = Calendar.getInstance();
+	  c.setTime(d);
+	  //2001-11-28T21:05:28Z
+	  String res = String.format("%02d-%02d-%02dT%02d:%02d:%02dZ", c.get(Calendar.YEAR), 
+			  													   c.get(Calendar.MONTH) + 1, 
+			  													   c.get(Calendar.DAY_OF_MONTH),
+			  													   c.get(Calendar.HOUR_OF_DAY),
+			  													   c.get(Calendar.MINUTE), 
+			  													   c.get(Calendar.SECOND));
+	  return res;
+  }
 
   public boolean storeToGpx(String fileName)
   {
@@ -319,7 +333,8 @@ public class GeoDbAdapter {
               			serializer.text(p.getName());
               		serializer.endTag(null, "name");
               		serializer.startTag(null, "time");
-          				serializer.text(p.getDate().toGMTString());	// TODO this is not the expected format
+              			Date d = p.getDate();
+          				serializer.text(getGpxStringDate(d));	// TODO this is not the expected format
           			serializer.endTag(null, "time");
                   serializer.endTag(null, "wpt");
                    
