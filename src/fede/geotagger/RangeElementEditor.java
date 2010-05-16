@@ -197,7 +197,7 @@ public class RangeElementEditor extends Activity {
 		menuItemId = MENU_CLEAN_ALL;
 		menuItemOrder = Menu.NONE;	 
 		menuItemText = R.string.clean_all_name;
-		menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
+		menu.add(groupId, menuItemId, menuItemOrder, menuItemText).setIcon(R.drawable.trash);
 
 		menuItemId = MENU_OPTIONS;
 		menuItemOrder = Menu.NONE;	 
