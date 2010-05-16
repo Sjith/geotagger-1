@@ -44,7 +44,8 @@
 <string name="gps_enabled_summary">Check this to enable gps</string>
 <string name="cell_enabled_name">Enable Cell Location</string>
 <string name="cell_enabled_summary">Check this to enable cell location</string>
-<string name="export_to_gpx_name">Export to Gpx</string>
+<string name="export_to_gpx_name">Export to gpx</string>
 <string name="gpx_file_name">geotagger.gpx</string>
+<string name="export_name">Export to sd</string>
 
 </resources>

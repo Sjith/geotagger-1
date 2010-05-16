@@ -12,6 +12,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -178,15 +179,19 @@ public class RangeElementEditor extends Activity {
 		
 		menu.add(groupId, menuItemId, menuItemOrder, menuItemText).setIcon(R.drawable.rangesmenu);
 		
+		
+		SubMenu sub = menu.addSubMenu(0, 0, Menu.NONE, R.string.export_name);  
+		sub.setIcon(R.drawable.exportxml);
+
 		menuItemId = MENU_EXPORT_TO_XML;
 		menuItemOrder = Menu.NONE;	 
 		menuItemText = R.string.export_to_xml_name;
-		menu.add(groupId, menuItemId, menuItemOrder, menuItemText).setIcon(R.drawable.exportxml);
+		sub.add(groupId, menuItemId, menuItemOrder, menuItemText);//.setIcon(R.drawable.exportxml);
 
 		menuItemId = MENU_EXPORT_TO_GPX;
 		menuItemOrder = Menu.NONE;	 
 		menuItemText = R.string.export_to_gpx_name;
-		menu.add(groupId, menuItemId, menuItemOrder, menuItemText).setIcon(R.drawable.exportxml);
+		sub.add(groupId, menuItemId, menuItemOrder, menuItemText);//.setIcon(R.drawable.exportxml);
 		
 		
 		menuItemId = MENU_CLEAN_ALL;

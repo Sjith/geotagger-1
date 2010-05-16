@@ -4,6 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="@color/background_color"
+    android:padding="2dip"
     >
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
@@ -26,7 +27,7 @@
     android:id="@+id/range_elem_from"
     android:textSize="25dip"
     android:textColor="@color/text_color"
-    android:paddingLeft="2dip" android:capitalize="none" android:paddingRight="2px"/>
+    android:paddingLeft="2dip" android:capitalize="none" android:paddingRight="2dip"/>
 <TextView  
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content" 
@@ -41,6 +42,7 @@
     android:id="@+id/range_elem_to"
     android:textSize="25dip"
     android:paddingLeft="2dip"
+    android:paddingRight="2dip"
 	android:gravity="center_horizontal"
     android:textColor="@color/text_color"/>
 <TextView  
