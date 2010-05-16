@@ -25,6 +25,8 @@ class InvalidNumber(Exception):
 
 
 class GeoTagger():
+    ''' Global class that contains ranges '''
+
     def __init__(self, options):
         self._ranges = {}
         self.options = options
@@ -72,6 +74,8 @@ class GeoTagger():
         return 'ranges:' + ranges + ' startranges:' + startRanges
 
     def is_valid_picture_file(self, filename):
+        ''' returns true if the file has the right extension'''
+
         ext = filename.rsplit('.')[-1]
         trace(filename + ' extension is ' + ext)
         if ext.upper() == self.options.filetype.upper():
@@ -116,10 +120,14 @@ class Position:
 
 
 class RangePos:
+    ''' Range of picture and related position'''
+
     def __init__(self, start, end, position):
         self.start, self.end, self.position  = start, end, position
 
     def __init__(self, xmlrange):
+        ''' constructor based from xml row'''
+
         self.start = long(xmlrange.attrib['from'])
         self.end = long(xmlrange.attrib['to'])
         try:
@@ -131,6 +139,7 @@ class RangePos:
         self.position = Position(lat, lon, alt)
 
     def is_suitable(self, picture):
+        ''' tells if a picture number is suitable for the selected range '''
         if (picture >= self.start) and (picture <= self.end):
             return True
         return False
@@ -143,6 +152,7 @@ numbersRe = re.compile('[0-9]+')	#matches AT LEAST one number
 
 
 class BasePictureFile:
+    ''' represents the picture file '''
     def __init__(self, name):
         self.name = name
 
@@ -155,6 +165,7 @@ class BasePictureFile:
 
 
 class PyPictureFile(BasePictureFile):
+    ''' override the write method using pyexiv2 library'''
     def write_exif(self, pos):	
         metadata = pyexiv2.ImageMetadata(self.name)
         metadata.read()
@@ -170,6 +181,7 @@ class PyPictureFile(BasePictureFile):
 
 
 class ExToolPictureFile(BasePictureFile):
+    ''' override the write method relaying on external exiftool command '''
     def write_exif(self, pos):	
         if sys.platform != 'win32':
             command = 'exiftool -m -overwrite_original -n -GPSLongitude=%f -GPSLatitude=%f \
