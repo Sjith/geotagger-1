@@ -7,49 +7,59 @@ import os
 import sys
 
 
+picture_ext = ['CR2', 'JPG']
+
 verbose = False
 
 def trace(message):
     if verbose == True:
         print message
 
+
+class InvalidRange(Exception):
+    '''Range invalid exception'''
+
+
+class InvalidNumber(Exception):
+    '''File name does not contain a valid number'''
+
+
 class GeoTagger():
     def __init__(self, options):
         self._ranges = {}
         self.options = options
-        self._initial_values = None
+        self._start_values = None
 
     def add_range(self, range):
         ''' Adds the range to the dictionary '''
 
         trace('adding %s'%(range))
         self._ranges[range.start] = range
-        self._initial_values = None
+        self._start_values = None
 
     def add_ranges(self, ranges):
+        ''' Adds a list of ranges to the dictionary '''
         for r in ranges:
-            self._ranges[r.start] = r 
-            self._initial_values = None
+            self.add_range(r)
 
     def get_range(self, picture_number):
         ''' Returns the range the picture number belongs to '''
 
-        if self._initial_values == None:
-            trace('fava')
-            self._initial_values = self._ranges.keys()
-            self._initial_values.sort()
+        if self._start_values == None:
+            self._start_values = self._ranges.keys()
+            self._start_values.sort()
 
         trace('trying to get valid range for %s'%(picture_number))
-        trace('start ranges %s'%(self._initial_values))
+        trace('start ranges %s'%(self._start_values))
 
-        candidate_pos = bisect(self._initial_values, long(picture_number)) - 1
+        candidate_pos = bisect(self._start_values, long(picture_number)) - 1
         trace('bisect res %s pos %s value'%(picture_number, candidate_pos)) 
 
         if candidate_pos == -1:
             trace('not pos found for %s'%(picture_number))
             raise InvalidRange
 
-        candidate_start = self._initial_values[candidate_pos]		#candidate start because need to check final element of range
+        candidate_start = self._start_values[candidate_pos]		#candidate start because need to check final element of range
         trace('candidate start for ' + str(picture_number) + ' ' + str(candidate_start))
         range = self._ranges[candidate_start]
 
@@ -69,12 +79,6 @@ class GeoTagger():
             return True
         return False
 
-
-class InvalidRange(Exception):
-    '''Range invalid exception'''
-
-class InvalidNumber(Exception):
-    '''File name does not contain a valid number'''
 
 
 def parse_arguments():
@@ -257,4 +261,7 @@ def run():
 
     write_info_to_pictures(g, options.picdir)
 
-run()
+if __name__ == '__main__':
+    run()
+
+
