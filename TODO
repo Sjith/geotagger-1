@@ -1,12 +1,11 @@
-- clean all icon
-- force only portrait
-- make the positions list bigger 
-- say where the file has been exported
 - test python on pc app with pyexiv library
-- make a gui for the python pc app
+- check file extension in gui
+- propagate error to gui
+- gpx mode for the gui
 - position name edit text on main page
 - context menu for range list
 - move xml export to another thread
 - profile memory usage to look for memory leaks
 - disable add live position while editing from range list 
 - choose output file name
+
