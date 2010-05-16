@@ -11,14 +11,12 @@ verbose = False
 
 def trace(message):
     if verbose == True:
-    print message
+        print message
 
 class GeoTagger():
     def __init__(self, options):
-        self.startRanges = []
-        self.ranges = {}
+        self._ranges = {}
         self.options = options
-        self.sorted = False
 
 
     def sort(self):
@@ -27,27 +25,35 @@ class GeoTagger():
         self.startRanges.sort()
 
     def add_range(self, range):
-        trace('adding ' + repr(range))
-        self.startRanges.append(range.start)
+        ''' Adds the range to the dictionary '''
+
+        trace('adding %s'%(range))
         self.ranges[range.start] = range
+        self._initial_values = None
 
-    def get_range(self, pictureNumber):
-        self.sort()
-        trace('trying to get valid range for ' + str(pictureNumber))
-        trace('start ranges' + str(self.startRanges))
-        candidatePos = bisect(self.startRanges, long(pictureNumber)) - 1
-        trace('bisect res ' + str(pictureNumber) + ' pos' + str(candidatePos) + ' value ') 
-        if candidatePos == -1:
-            trace('not pos found for' + str(pictureNumber))
+    def get_range(self, picture_number):
+        ''' Returns the range the picture number belongs to '''
+
+        if self._initial_values == False:
+            self._initial_values = self._ranges.keys().sort()
+
+        trace('trying to get valid range for %s'%(_picture_number))
+        trace('start ranges %s'.self._start_ranges)
+
+        candidate_pos = bisect(self._start_ranges, long(_picture_number)) - 1
+        trace('bisect res %s pos %s value'%(_picture_number, candidate_pos)) 
+
+        if candidate_pos == -1:
+            trace('not pos found for' + str(_picture_number))
             raise NotValidRange
 
-        candidateStart = self.startRanges[candidatePos]		#candidate start because need to check final element of range
-        trace('candidate start for ' + str(pictureNumber) + ' ' + str(candidateStart))
-        range = self.ranges[candidateStart]
+        candidate_start = self._initial_values[candidate_pos]		#candidate start because need to check final element of range
+        trace('candidate start for ' + str(_picture_number) + ' ' + str(candidate_start))
+        range = self.ranges[candidate_start]
 
-        if range.is_suitable(pictureNumber):	#checks if candidate range is valid
-            trace('not valid range found for' + str(pictureNumber))
-            raise NotValidRange
+        if range.is_suitable(_picture_number):	#checks if candidate range is valid
+            trace('not valid range found for' + str(_picture_number))
+            raise InvalidRange
         return range
 
     def __repr__():
@@ -65,8 +71,8 @@ class GeoTagger():
 class InvalidRange(Exception):
     '''Range invalid exception'''
 
-class NotAPictureFile(Exception):
-    '''File is not a picture file'''
+class InvalidNumber(Exception):
+    '''File name does not contain a valid number'''
 
 
 def parse_arguments():
@@ -81,9 +87,8 @@ def parse_arguments():
 
 class Position:
     def __init__(self, l, lo, al):
-        self.latitude = l
-        self.longitude = lo
-        self.altitude = al
+        self.latitude, self.longitude, self.altitude = l, lo, al
+
         self.fLat = float(self.latitude)
         if self.fLat > 0:
             self.latOrientation = 'N'
@@ -108,37 +113,38 @@ class RangePos:
     def __init__(self, start, end, position):
         self.start, self.end, self.position  = start, end, position
 
+    def __init__(self, xmlrange):
+        self.start = long(xmlrange.attrib['from'])
+        self.end = long(xmlrange.attrib['to'])
+        try:
+            lat = xmlrange.attrib['latitude']
+            lon = xmlrange.attrib['longitude']
+            alt = xmlrange.attrib['altitude']
+        except:
+            trace('some attributes not found')
+
+        self.position = Position(lat, lon, alt)
+
     def is_suitable(self, picture):
         if (picture >= self.start) and (picture <= self.end):
             return True
         return False
 
-    def __init__(self, xmlrange):
-        self.start = long(xmlrange.attrib['from'])
-        self.end = long(xmlrange.attrib['to'])
-    try:
-        lat = xmlrange.attrib['latitude']
-        lon = xmlrange.attrib['longitude']
-        alt = xmlrange.attrib['altitude']
-    except:
-        trace('some attributes not found')
-        self.position = Position(lat, lon, alt)
-
-def __repr__(self):
-    return 'start:' + str(self.start) + ' end:' + str(self.end) + ' pos:' + repr(self.position)
-
+    def __repr__(self):
+        return 'start:' + str(self.start) + ' end:' + str(self.end) + ' pos:' + repr(self.position)
 
 
 numbersRe = re.compile('[0-9]+')	#matches AT LEAST one number
 
+
 class BasePictureFile:
     def __init__(self, name):
-    self.name = name
+        self.name = name
+
     def get_number(self):
         res = numbersRe.search(self.name)
         if res == None:
-            trace('get number for ' + self.name + ' ' + 0)
-            return 0
+            raise InvalidNumber
         trace('get number for ' + self.name + ' ' + res.group(0))
         return long(res.group(0))
 
@@ -175,10 +181,9 @@ class ExToolPictureFile(BasePictureFile):
 #TODO switch if import fails
 PictureFile = ExToolPictureFile
 
-
-
-
 def process_xml_file(filexml, g):
+    ''' Processes xml file and stores info in ranges contained in g'''
+
     trace('Processing ' + filexml)
     tree = parse(filexml)
     allranges = tree.findall('range')
@@ -193,21 +198,42 @@ def process_xml_file(filexml, g):
     #		dump(xmlrange)
 
 
-def write_info_to_pictures(g, dir):
-    trace('trying to write files in ' + dir)
-    pictureFiles = filter(g.is_valid_picture_file, listdir(dir))
 
-    for file in pictureFiles:
+def ranges_generator(filexml):
+    ''' Processes xml file and stores info in ranges contained in g'''
+
+    trace('Processing ' + filexml)
+    tree = parse(filexml)
+    allranges = tree.findall('range')
+    for xmlrange in allranges:
+        trace('processing xml row')
+    #try:
+        yield RangePos(xmlrange)
+    #except:
+    #	trace('unable to handle:')
+    #	if verbose:
+    #		dump(xmlrange)
+
+
+
+
+def write_info_to_pictures(g, dir):
+    '''Writes exif in the pictures stored in dir path'''
+
+    trace('trying to write files in ' + dir)
+    picture_files= filter(g.is_valid_picture_file, listdir(dir))
+
+    for file in picture_files:
         try:
             p = PictureFile(file)
             n = p.get_number()	#number from the name of the picture
-            if n == 0:
-                continue
             r = g.get_range(n)	#range the number belongs to
             trace('Got range ' + repr(r))
             p.write_exif(r.position)
-    except NotValidRange:
-        trace('Range invalid for ' + file)
+        except NotValidRange:
+            trace('Range invalid for ' + file)
+        except InvalidNumber:
+            trace('File %s does not contain a number'%(file))
 
 
 
@@ -222,7 +248,8 @@ def run():
     trace('verbose mode on')
     g = GeoTagger(options)
     try:
-        process_xml_file(options.geofile, g)
+        #process_xml_file(options.geofile, g)
+        map(g.add_range(), ranges_generator(options.geofile))
     except:
         print 'Unable to process ' + options.geofile
     return
