@@ -7,7 +7,7 @@ import os
 import sys
 
 
-picture_ext = ['CR2', 'JPG']
+pictures_ext = ['CR2', 'JPG']
 
 verbose = False
 
@@ -254,9 +254,8 @@ def write_info_to_pictures(g, dir):
 
 
 
-def run():
-    global verbose
-    options = parse_arguments()
+def run(options):
+    global verbose # TODO Remove me
     if options.useExifTool:
         trace('forcing to use exiftool')
         PictureFile = ExToolPictureFile
@@ -274,6 +273,7 @@ def run():
     write_info_to_pictures(g, options.picdir)
 
 if __name__ == '__main__':
-    run()
+    options = parse_arguments()
+    run(options)
 
 
