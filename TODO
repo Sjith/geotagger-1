@@ -1,4 +1,7 @@
-- new icons
+- clean all icon
+- make the positions list bigger 
+- group export to xml - export to gpx
+- say where the file has been exported
 - test python on pc app with pyexiv library
 - make a gui for the python pc app
 - position name edit text on main page
