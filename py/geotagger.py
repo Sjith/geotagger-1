@@ -17,42 +17,44 @@ class GeoTagger():
     def __init__(self, options):
         self._ranges = {}
         self.options = options
-
-
-    def sort(self):
-        if self.sorted:
-            return
-        self.startRanges.sort()
+        self._initial_values = None
 
     def add_range(self, range):
         ''' Adds the range to the dictionary '''
 
         trace('adding %s'%(range))
-        self.ranges[range.start] = range
+        self._ranges[range.start] = range
         self._initial_values = None
+
+    def add_ranges(self, ranges):
+        for r in ranges:
+            self._ranges[r.start] = r 
+            self._initial_values = None
 
     def get_range(self, picture_number):
         ''' Returns the range the picture number belongs to '''
 
-        if self._initial_values == False:
-            self._initial_values = self._ranges.keys().sort()
+        if self._initial_values == None:
+            trace('fava')
+            self._initial_values = self._ranges.keys()
+            self._initial_values.sort()
 
-        trace('trying to get valid range for %s'%(_picture_number))
-        trace('start ranges %s'.self._start_ranges)
+        trace('trying to get valid range for %s'%(picture_number))
+        trace('start ranges %s'%(self._initial_values))
 
-        candidate_pos = bisect(self._start_ranges, long(_picture_number)) - 1
-        trace('bisect res %s pos %s value'%(_picture_number, candidate_pos)) 
+        candidate_pos = bisect(self._initial_values, long(picture_number)) - 1
+        trace('bisect res %s pos %s value'%(picture_number, candidate_pos)) 
 
         if candidate_pos == -1:
-            trace('not pos found for' + str(_picture_number))
-            raise NotValidRange
+            trace('not pos found for %s'%(picture_number))
+            raise InvalidRange
 
         candidate_start = self._initial_values[candidate_pos]		#candidate start because need to check final element of range
-        trace('candidate start for ' + str(_picture_number) + ' ' + str(candidate_start))
-        range = self.ranges[candidate_start]
+        trace('candidate start for ' + str(picture_number) + ' ' + str(candidate_start))
+        range = self._ranges[candidate_start]
 
-        if range.is_suitable(_picture_number):	#checks if candidate range is valid
-            trace('not valid range found for' + str(_picture_number))
+        if range.is_suitable(picture_number):	#checks if candidate range is valid
+            trace('not valid range found for' + str(picture_number))
             raise InvalidRange
         return range
 
@@ -122,7 +124,6 @@ class RangePos:
             alt = xmlrange.attrib['altitude']
         except:
             trace('some attributes not found')
-
         self.position = Position(lat, lon, alt)
 
     def is_suitable(self, picture):
@@ -230,8 +231,8 @@ def write_info_to_pictures(g, dir):
             r = g.get_range(n)	#range the number belongs to
             trace('Got range ' + repr(r))
             p.write_exif(r.position)
-        except NotValidRange:
-            trace('Range invalid for ' + file)
+        except InvalidRange:
+            trace('Range invalid for %s'%(file))
         except InvalidNumber:
             trace('File %s does not contain a number'%(file))
 
@@ -249,10 +250,10 @@ def run():
     g = GeoTagger(options)
     try:
         #process_xml_file(options.geofile, g)
-        map(g.add_range(), ranges_generator(options.geofile))
+        g.add_ranges(ranges_generator(options.geofile))
     except:
-        print 'Unable to process ' + options.geofile
-    return
+        print 'Unable to process %s'%options.geofile
+        return
 
     write_info_to_pictures(g, options.picdir)
 
