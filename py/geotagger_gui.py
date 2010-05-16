@@ -47,7 +47,11 @@ class GeotaggerDialog(QtGui.QMainWindow):
 
     def choose_file(self):
         filename = QtGui.QFileDialog.getOpenFileName(self, 'Get xml file', '.')    #TODO scegliere la home in base al sistema operativo 
-        self.ui.filename.setText(filename)
+        ext = str(filename).rsplit('.')[-1]
+        if ext.upper() not in ['XML', 'GPX']:
+            QtGui.QMessageBox.question(self, 'Message', "Invalid file type")
+        else:
+            self.ui.filename.setText(filename)
 
     def reject(self):
         pass

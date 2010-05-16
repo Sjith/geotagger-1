@@ -264,7 +264,6 @@ def run(options):
     trace('verbose mode on')
     g = GeoTagger(options)
     try:
-        #process_xml_file(options.geofile, g)
         g.add_ranges(ranges_generator(options.geofile))
     except:
         print 'Unable to process %s'%options.geofile
