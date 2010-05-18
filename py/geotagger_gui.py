@@ -2,20 +2,24 @@ from PyQt4 import QtCore, QtGui
 import sys
 import geotagger_pyui as BuildGui
 import geotagger
+import os.path
+import cPickle
 
 GEOFILE_NAME = 'xml_file'
 DIR_NAME = 'folder'
 VERBOSE_NAME = 'verbose'
 MUST_USE_EXIF_NAME = 'use exif tool'
 FILE_TYPE_NAME = 'file type'
+OPTIONS_FILE='geotagger.ini'
 
 class Options:
     def __init__(self, **params):
-        self.geofile = params.get(GEOFILE_NAME, 'geotagger.xml')
-        self.picdir = params.get(DIR_NAME, 'geotagger.xml')
-        self.verbose = params.get(VERBOSE_NAME, 'geotagger.xml')
-        self.useExifTool = params.get(MUST_USE_EXIF_NAME, 'geotagger.xml')
-        self.filetype = params.get(FILE_TYPE_NAME, 'geotagger.xml')
+        self.geofile = ''
+        self.picdir = ''
+        self.verbose = params.get(VERBOSE_NAME, True)
+        self.useExifTool = params.get(MUST_USE_EXIF_NAME, True)
+        self.filetype = params.get(FILE_TYPE_NAME, 'jpg')
+        self.index = 0
 
 
 class GeotaggerDialog(QtGui.QMainWindow):
@@ -23,30 +27,72 @@ class GeotaggerDialog(QtGui.QMainWindow):
         QtGui.QMainWindow.__init__(self)
         self.ui=BuildGui.Ui_Dialog()
         self.ui.setupUi(self)
+        self.ui.useExifTool.hide()
         self.connect(self.ui.goButton, QtCore.SIGNAL('clicked()'), self.go)
         self.connect(self.ui.chooseFileButton, QtCore.SIGNAL('clicked()'), self.choose_file)
         self.connect(self.ui.chooseDirButton, QtCore.SIGNAL('clicked()'), self.choose_picture_folder)
+        geotagger.load_extensions()
         self.ui.pictureType.addItems(geotagger.pictures_ext)
+        try:
+            self._path = os.path.expanduser('~')
+        except:
+            self._path = '.'
+
+        self.load_options()
+
+    def load_options(self):
+        try:
+            opt_file = open(OPTIONS_FILE, 'r')
+            self._options = cPickle.load(opt_file)
+            opt_file.close()
+        except:
+            self._options = Options()
+            return
+        self.ui.filename.setText(self._options.geofile)
+        self.ui.picturefolder.setText(self._options.picdir)
+        self.ui.pictureType.setCurrentIndex(self._options.index)
+        if self._options.verbose:
+            self.ui.verbose.setCheckState(2)
+        else:
+            self.ui.verbose.setCheckState(0)
+
+    def fill_options(self):
+        self._options.geofile = str(self.ui.filename.text())
+        self._options.picdir = str(self.ui.picturefolder.text())
+        self._options.filetype = str(self.ui.pictureType.currentText())
+        self._options.index = self.ui.pictureType.currentIndex()
+        self._options.useExifTool = self.ui.useExifTool.isChecked()
+        self._options.verbose = self.ui.verbose.isChecked()
 
     def go(self):
-        o = Options()
-        o.geofile = str(self.ui.filename.text())
-        o.picdir = str(self.ui.picturefolder.text())
-        o.filetype = str(self.ui.pictureType.currentText())
-        o.useExifTool = self.ui.useExifTool.isChecked()
-        o.verbose = self.ui.verbose.isChecked()
-        if o.geofile == '' or o.picdir == '':
+        self.fill_options()
+        if self._options.geofile == '' or self._options.picdir == '':
             QtGui.QMessageBox.question(self, 'Message', "Must set file and picture folder")
         else:
-            geotagger.run(o)
+            geotagger.run(self._options)
             QtGui.QMessageBox.question(self, 'Message', "Pictures geotagged")
 
+    def save_options(self):
+        self.fill_options()
+        opt_file = open(OPTIONS_FILE, 'w')
+        cPickle.dump(self._options, opt_file)
+        opt_file.close()
+
     def choose_picture_folder(self):
-        dir = QtGui.QFileDialog.getExistingDirectory(self, 'Picture folder', '.')    #TODO scegliere la home in base al sistema operativo 
+        if self._options.picdir == '':
+            folder = self._path
+        else:
+            folder = self._options.picdir
+        dir = QtGui.QFileDialog.getExistingDirectory(self, 'Picture folder', folder)    
         self.ui.picturefolder.setText(dir)
 
     def choose_file(self):
-        filename = QtGui.QFileDialog.getOpenFileName(self, 'Get xml file', '.')    #TODO scegliere la home in base al sistema operativo 
+        if self._options.geofile == '':
+            folder = self._path
+        else:
+            folder = self._options.geofile
+
+        filename = QtGui.QFileDialog.getOpenFileName(self, 'Get xml file', folder)   
         ext = str(filename).rsplit('.')[-1]
         if ext.upper() not in ['XML', 'GPX']:
             QtGui.QMessageBox.question(self, 'Message', "Invalid file type")
@@ -64,5 +110,6 @@ app = QtGui.QApplication(sys.argv)
 dialog = GeotaggerDialog()
 dialog.show()
 app.exec_()
+dialog.save_options()
 
 

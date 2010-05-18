@@ -8,7 +8,7 @@ import os.path
 import sys
 
 
-pictures_ext = ['CR2', 'JPG']
+pictures_ext = []
 
 verbose = False
 
@@ -256,6 +256,13 @@ def write_info_to_pictures(g, dir):
             trace('File %s does not contain a number'%(file))
 
 
+def load_extensions():
+    ext_file = open('extensions.ini')
+    [pictures_ext.append(ext[:-1]) for ext in ext_file]     #taking off the \n
+    if 'JPG' not in pictures_ext:
+        pictures_ext.append('JPG')
+    ext_file.close()
+
 
 def run(options):
     global verbose # TODO Remove me
@@ -265,6 +272,7 @@ def run(options):
 
     verbose = options.verbose
     trace('verbose mode on')
+    load_extensions()
     g = GeoTagger(options)
     try:
         g.add_ranges(ranges_generator(options.geofile))
