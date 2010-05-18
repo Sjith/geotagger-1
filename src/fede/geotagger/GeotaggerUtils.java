@@ -27,8 +27,8 @@ public class GeotaggerUtils {
 	{
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
 		
-		return new Preferences (prefs.getBoolean("PREF_ENABLE_GPS", false),
-								prefs.getBoolean("PREF_ENABLE_CELL", false));	
+		return new Preferences (prefs.getBoolean("PREF_ENABLE_GPS", true),	// better being more accurate
+								prefs.getBoolean("PREF_ENABLE_CELL", true));	
 	}
 	
 	

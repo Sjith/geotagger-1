@@ -1,8 +1,5 @@
-- absolute path for exiftool
 - add output file to show which picture have been updated
-- configure picture extension in an option file 
 - test python on pc app with pyexiv library
-- check file extension in gui
 - propagate error to gui
 - gpx mode for the gui
 - position name edit text on main page
