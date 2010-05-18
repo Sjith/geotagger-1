@@ -4,6 +4,7 @@ from bisect import bisect_left, bisect
 import re
 from os import listdir
 import os
+import os.path
 import sys
 
 
@@ -153,21 +154,23 @@ numbersRe = re.compile('[0-9]+')	#matches AT LEAST one number
 
 class BasePictureFile:
     ''' represents the picture file '''
-    def __init__(self, name):
-        self.name = name
+    def __init__(self, name, dir):
+        self._name = name
+        self._dir = dir
+        self._file_with_path = self._dir + os.path.sep + self._name
 
     def get_number(self):
-        res = numbersRe.search(self.name)
+        res = numbersRe.search(self._name)
         if res == None:
             raise InvalidNumber
-        trace('get number for ' + self.name + ' ' + res.group(0))
+        trace('get number for ' + self._name + ' ' + res.group(0))
         return long(res.group(0))
 
 
 class PyPictureFile(BasePictureFile):
     ''' override the write method using pyexiv2 library'''
     def write_exif(self, pos):	
-        metadata = pyexiv2.ImageMetadata(self.name)
+        metadata = pyexiv2.ImageMetadata(self._file_with_path)
         metadata.read()
         tag = metadata['Exif.GPSInfo.GPSLatitudeRef']
         tag.value = pos.latOrientation
@@ -186,11 +189,11 @@ class ExToolPictureFile(BasePictureFile):
         if sys.platform != 'win32':
             command = 'exiftool -m -overwrite_original -n -GPSLongitude=%f -GPSLatitude=%f \
                        -GPSLongitudeRef=%s -GPSLatitudeRef=%s -GPSAltitude=%f "%s"'\
-                       %(pos.fLong,pos.fLat,pos.longOrientation,pos.latOrientation,pos.fAltitude,self.name)
+                       %(pos.fLong,pos.fLat,pos.longOrientation,pos.latOrientation,pos.fAltitude,self._file_with_path)
         else:
             command = 'exiftool.exe -m -overwrite_original -n -GPSLongitude=%f -GPSLatitude=%f \
                        -GPSLongitudeRef=%s -GPSLatitudeRef=%s -GPSAltitude=%f "%s"'\
-                       %(pos.fLong,pos.fLat,pos.longOrientation,pos.latOrientation,pos.fAltitude,self.name)
+                       %(pos.fLong,pos.fLat,pos.longOrientation,pos.latOrientation,pos.fAltitude, self._file_with_path)
         trace('Executing ' + command)
         os.popen(command)
 
@@ -242,7 +245,7 @@ def write_info_to_pictures(g, dir):
 
     for file in picture_files:
         try:
-            p = PictureFile(file)
+            p = PictureFile(file, dir)
             n = p.get_number()	#number from the name of the picture
             r = g.get_range(n)	#range the number belongs to
             trace('Got range ' + repr(r))
