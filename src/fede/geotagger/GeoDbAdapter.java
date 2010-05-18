@@ -334,7 +334,7 @@ public class GeoDbAdapter {
               		serializer.endTag(null, "name");
               		serializer.startTag(null, "time");
               			Date d = p.getDate();
-          				serializer.text(getGpxStringDate(d));	// TODO this is not the expected format
+          				serializer.text(getGpxStringDate(d));
           			serializer.endTag(null, "time");
                   serializer.endTag(null, "wpt");
                    
