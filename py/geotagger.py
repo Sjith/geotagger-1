@@ -12,7 +12,7 @@ pictures_ext = ['CR2', 'JPG']
 verbose = False
 
 def trace(message):
-    if verbose == True:
+    if verbose:
         print message
 
 
@@ -65,7 +65,7 @@ class GeoTagger():
         trace('candidate start for ' + str(picture_number) + ' ' + str(candidate_start))
         range = self._ranges[candidate_start]
 
-        if range.is_suitable(picture_number):	#checks if candidate range is valid
+        if not range.is_suitable(picture_number):	#checks if candidate range is valid
             trace('not valid range found for' + str(picture_number))
             raise InvalidRange
         return range
