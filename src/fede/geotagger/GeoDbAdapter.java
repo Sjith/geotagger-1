@@ -141,7 +141,6 @@ public class GeoDbAdapter {
 	if(canDeletePosition(_rowIndex)){
 		return db.delete(POSITION_TABLE, ROW_ID + "=" + _rowIndex, null) > 0;
 	}else{
-		Log.d(TAG, "Position " + _rowIndex.toString() + " not deletable");
 		return false;
 	}
   }
@@ -298,14 +297,12 @@ public class GeoDbAdapter {
       try{
         newxmlfile.createNewFile();
       }catch(IOException e){
-        Log.e("IOException", "exception in createNewFile() method");
         return false;
       }
       FileOutputStream fileos = null;          
       try{
         fileos = new FileOutputStream(newxmlfile);
       }catch(FileNotFoundException e){
-        Log.e("FileNotFoundException", "can't create FileOutputStream");
         return false;
       }
 
@@ -347,7 +344,6 @@ public class GeoDbAdapter {
              //finally we close the file stream
              fileos.close();
         } catch (Exception e) {
-             Log.e("Exception","error occurred while creating xml file");
              return false;
         }
    
@@ -368,14 +364,12 @@ public class GeoDbAdapter {
       try{
         newxmlfile.createNewFile();
       }catch(IOException e){
-        Log.e("IOException", "exception in createNewFile() method");
         return false;
       }
       FileOutputStream fileos = null;          
       try{
         fileos = new FileOutputStream(newxmlfile);
       }catch(FileNotFoundException e){
-        Log.e("FileNotFoundException", "can't create FileOutputStream");
         return false;
       }
 
@@ -410,7 +404,6 @@ public class GeoDbAdapter {
              //finally we close the file stream
              fileos.close();
         } catch (Exception e) {
-             Log.e("Exception","error occurred while creating xml file");
              return false;
         }
    
