@@ -1,4 +1,4 @@
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore, QtGui, Qt
 import sys
 import geotagger_pyui as BuildGui
 import geotagger
@@ -11,6 +11,8 @@ VERBOSE_NAME = 'verbose'
 MUST_USE_EXIF_NAME = 'use exif tool'
 FILE_TYPE_NAME = 'file type'
 OPTIONS_FILE='geotagger.ini'
+CHECKED = 2
+UNCHECKED = 0
 
 class Options:
     def __init__(self, **params):
@@ -20,6 +22,7 @@ class Options:
         self.useExifTool = params.get(MUST_USE_EXIF_NAME, True)
         self.filetype = params.get(FILE_TYPE_NAME, 'jpg')
         self.index = 0
+        self.preserve = False
 
 
 class GeotaggerDialog(QtGui.QMainWindow):
@@ -27,7 +30,6 @@ class GeotaggerDialog(QtGui.QMainWindow):
         QtGui.QMainWindow.__init__(self)
         self.ui=BuildGui.Ui_Dialog()
         self.ui.setupUi(self)
-        self.ui.useExifTool.hide()
         self.connect(self.ui.goButton, QtCore.SIGNAL('clicked()'), self.go)
         self.connect(self.ui.chooseFileButton, QtCore.SIGNAL('clicked()'), self.choose_file)
         self.connect(self.ui.chooseDirButton, QtCore.SIGNAL('clicked()'), self.choose_picture_folder)
@@ -51,17 +53,22 @@ class GeotaggerDialog(QtGui.QMainWindow):
         self.ui.filename.setText(self._options.geofile)
         self.ui.picturefolder.setText(self._options.picdir)
         self.ui.pictureType.setCurrentIndex(self._options.index)
-        if self._options.verbose:
-            self.ui.verbose.setCheckState(2)
+        if self._options.preserve:
+            self.ui.preserveOriginal.setCheckState(CHECKED)
         else:
-            self.ui.verbose.setCheckState(0)
+            self.ui.preserveOriginal.setCheckState(UNCHECKED)
+
+        if self._options.verbose:
+            self.ui.verbose.setCheckState(CHECKED)
+        else:
+            self.ui.verbose.setCheckState(UNCHECKED)
 
     def fill_options(self):
         self._options.geofile = str(self.ui.filename.text())
         self._options.picdir = str(self.ui.picturefolder.text())
         self._options.filetype = str(self.ui.pictureType.currentText())
         self._options.index = self.ui.pictureType.currentIndex()
-        self._options.useExifTool = self.ui.useExifTool.isChecked()
+        self._options.preserve = self.ui.preserveOriginal.isChecked()
         self._options.verbose = self.ui.verbose.isChecked()
 
     def go(self):

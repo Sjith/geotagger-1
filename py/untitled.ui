@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>450</width>
-    <height>272</height>
+    <width>481</width>
+    <height>276</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,17 +26,17 @@
     <string>Verbose</string>
    </property>
   </widget>
-  <widget class="QCheckBox" name="useExifTool">
+  <widget class="QCheckBox" name="preserveOriginal">
    <property name="geometry">
     <rect>
      <x>310</x>
      <y>90</y>
-     <width>121</width>
+     <width>131</width>
      <height>20</height>
     </rect>
    </property>
    <property name="text">
-    <string>Use Exif Tool</string>
+    <string>Preserve original</string>
    </property>
    <property name="checked">
     <bool>true</bool>

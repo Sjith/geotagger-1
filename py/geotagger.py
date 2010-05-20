@@ -93,6 +93,7 @@ def parse_arguments():
     parser.add_option("-v", "--verbose", dest="verbose", action="store_true", help="verbose mode on")
     parser.add_option("-f", "--fileext", dest="filetype", help="picture file extension", default="jpg")
     parser.add_option("-t", "--exiftool", dest="useExifTool", help="force to use exif tool")
+    parser.add_option("-p", "--preserve", dest="preserve", action="store_true", help="preserve original images")
     (options, args) = parser.parse_args()
     return options
 
@@ -169,7 +170,7 @@ class BasePictureFile:
 
 class PyPictureFile(BasePictureFile):
     ''' override the write method using pyexiv2 library'''
-    def write_exif(self, pos):	
+    def write_exif(self, pos, preserve):	
         metadata = pyexiv2.ImageMetadata(self._file_with_path)
         metadata.read()
         tag = metadata['Exif.GPSInfo.GPSLatitudeRef']
@@ -185,15 +186,21 @@ class PyPictureFile(BasePictureFile):
 
 class ExToolPictureFile(BasePictureFile):
     ''' override the write method relaying on external exiftool command '''
-    def write_exif(self, pos):	
-        if sys.platform != 'win32':
-            command = 'exiftool -m -overwrite_original -n -GPSLongitude=%f -GPSLatitude=%f \
-                       -GPSLongitudeRef=%s -GPSLatitudeRef=%s -GPSAltitude=%f "%s"'\
-                       %(pos.fLong,pos.fLat,pos.longOrientation,pos.latOrientation,pos.fAltitude,self._file_with_path)
+    def write_exif(self, pos, preserve):	
+        if preserve:
+            override_options = ''
         else:
-            command = 'exiftool.exe -m -overwrite_original -n -GPSLongitude=%f -GPSLatitude=%f \
+            override_options = '-overwrite_original'
+
+        if sys.platform != 'win32':
+            output_file = ''
+            command = 'exiftool -m -n %s -GPSLongitude=%f -GPSLatitude=%f \
                        -GPSLongitudeRef=%s -GPSLatitudeRef=%s -GPSAltitude=%f "%s"'\
-                       %(pos.fLong,pos.fLat,pos.longOrientation,pos.latOrientation,pos.fAltitude, self._file_with_path)
+                       %(override_options, pos.fLong,pos.fLat,pos.longOrientation,pos.latOrientation,pos.fAltitude,self._file_with_path)
+        else:
+            command = 'exiftool.exe -m  -n %s -GPSLongitude=%f -GPSLatitude=%f \
+                       -GPSLongitudeRef=%s -GPSLatitudeRef=%s -GPSAltitude=%f "%s"'\
+                       %(override_options, pos.fLong,pos.fLat,pos.longOrientation,pos.latOrientation,pos.fAltitude, self._file_with_path)
         trace('Executing ' + command)
         os.popen(command)
 
@@ -248,8 +255,8 @@ def write_info_to_pictures(g, dir):
             p = PictureFile(file, dir)
             n = p.get_number()	#number from the name of the picture
             r = g.get_range(n)	#range the number belongs to
-            trace('Got range ' + repr(r))
-            p.write_exif(r.position)
+            trace('Got range '%(r))
+            p.write_exif(r.position, g.options.preserve)
         except InvalidRange:
             trace('Range invalid for %s'%(file))
         except InvalidNumber:

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'untitled.ui'
 #
-# Created: Sun May 16 22:43:37 2010
+# Created: Fri May 21 00:00:19 2010
 #      by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,14 +12,14 @@ from PyQt4 import QtCore, QtGui
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(450, 272)
+        Dialog.resize(481, 276)
         self.verbose = QtGui.QCheckBox(Dialog)
         self.verbose.setGeometry(QtCore.QRect(310, 50, 87, 20))
         self.verbose.setObjectName("verbose")
-        self.useExifTool = QtGui.QCheckBox(Dialog)
-        self.useExifTool.setGeometry(QtCore.QRect(310, 90, 121, 20))
-        self.useExifTool.setChecked(True)
-        self.useExifTool.setObjectName("useExifTool")
+        self.preserveOriginal = QtGui.QCheckBox(Dialog)
+        self.preserveOriginal.setGeometry(QtCore.QRect(310, 90, 131, 20))
+        self.preserveOriginal.setChecked(True)
+        self.preserveOriginal.setObjectName("preserveOriginal")
         self.pictureType = QtGui.QComboBox(Dialog)
         self.pictureType.setGeometry(QtCore.QRect(310, 140, 111, 26))
         self.pictureType.setObjectName("pictureType")
@@ -56,7 +56,7 @@ class Ui_Dialog(object):
     def retranslateUi(self, Dialog):
         Dialog.setWindowTitle(QtGui.QApplication.translate("Dialog", "Geotagger", None, QtGui.QApplication.UnicodeUTF8))
         self.verbose.setText(QtGui.QApplication.translate("Dialog", "Verbose", None, QtGui.QApplication.UnicodeUTF8))
-        self.useExifTool.setText(QtGui.QApplication.translate("Dialog", "Use Exif Tool", None, QtGui.QApplication.UnicodeUTF8))
+        self.preserveOriginal.setText(QtGui.QApplication.translate("Dialog", "Preserve original", None, QtGui.QApplication.UnicodeUTF8))
         self.goButton.setText(QtGui.QApplication.translate("Dialog", "Go", None, QtGui.QApplication.UnicodeUTF8))
         self.fileName.setText(QtGui.QApplication.translate("Dialog", "Xml file", None, QtGui.QApplication.UnicodeUTF8))
         self.label.setText(QtGui.QApplication.translate("Dialog", "Picture folder", None, QtGui.QApplication.UnicodeUTF8))
