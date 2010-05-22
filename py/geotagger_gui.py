@@ -41,8 +41,10 @@ class TaggerThread(QThread):
         self.start()
 
     def run(self):
-            geotagger.run(self._options)
-#TODO Add a callback to show the progress
+            geotagger.run(self._options, self.report)
+
+    def report(self, message):
+        self.emit(QtCore.SIGNAL("processing(QString)"), message)
 
 
 
@@ -57,6 +59,7 @@ class GeotaggerDialog(QtGui.QMainWindow):
         self.connect(self.ui.chooseFileButton, QtCore.SIGNAL('clicked()'), self.choose_file)
         self.connect(self.ui.chooseDirButton, QtCore.SIGNAL('clicked()'), self.choose_picture_folder)
         self.connect(self.thread, QtCore.SIGNAL("finished()"), self.geotagging_report)
+        self.connect(self.thread, QtCore.SIGNAL("processing(QString)"), self.ui.status.setText)
 
 
         geotagger.load_extensions()
@@ -67,6 +70,9 @@ class GeotaggerDialog(QtGui.QMainWindow):
             self._path = '.'
 
         self.load_options()
+
+    def report(self, message):
+        print message + 'fava'
 
     def load_options(self):
         try:

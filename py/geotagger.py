@@ -244,14 +244,20 @@ def ranges_generator(filexml):
 
 
 
-def write_info_to_pictures(g, dir):
+def write_info_to_pictures(g, dir, status_report):
     '''Writes exif in the pictures stored in dir path'''
 
     trace('trying to write files in ' + dir)
     picture_files= filter(g.is_valid_picture_file, listdir(dir))
+    pictures_num = len(picture_files)
 
-    for file in picture_files:
+    if not pictures_num:
+        status_report('No pictures found in folder')
+        return 
+
+    for file_num, file in enumerate(picture_files):
         try:
+            status_report('Processing %s, %d of %d'%(file, file_num + 1, pictures_num))
             p = PictureFile(file, dir)
             n = p.get_number()	#number from the name of the picture
             r = g.get_range(n)	#range the number belongs to
@@ -271,7 +277,7 @@ def load_extensions():
     ext_file.close()
 
 
-def run(options):
+def run(options, status_report):
     global verbose # TODO Remove me
     if options.useExifTool:
         trace('forcing to use exiftool')
@@ -287,10 +293,13 @@ def run(options):
         print 'Unable to process %s'%options.geofile
         return
 
-    write_info_to_pictures(g, options.picdir)
+    write_info_to_pictures(g, options.picdir, status_report)
+
+def command_line_status_rep(status):
+    trace(status)
 
 if __name__ == '__main__':
     options = parse_arguments()
-    run(options)
+    run(options, command_line_status_rep)
 
 
