@@ -224,7 +224,7 @@ public class RangeElementEditor extends Activity {
 		    break;
 			}
 			case MENU_EXPORT_TO_XML:{
-				if(mDbHelper.storeToXml(getString(R.string.file_name_name))){
+				if(mDbHelper.storeToXml(GeoDbAdapter.buildOutputFileName("xml"))){
 					GeotaggerUtils.showErrorDialog(getString(R.string.xml_exported_name), getString(R.string.export_to_xml_name), this);
 				}else{
 					GeotaggerUtils.showErrorDialog(getString(R.string.xml_failed_name), getString(R.string.export_to_xml_name), this);
@@ -232,7 +232,7 @@ public class RangeElementEditor extends Activity {
 		    break;
 			}
 			case MENU_EXPORT_TO_GPX:{
-				if(mDbHelper.storeToGpx(getString(R.string.gpx_file_name))){
+				if(mDbHelper.storeToGpx(GeoDbAdapter.buildOutputFileName("gpx"))){
 					GeotaggerUtils.showErrorDialog(getString(R.string.xml_exported_name), getString(R.string.export_to_xml_name), this);
 				}else{
 					GeotaggerUtils.showErrorDialog(getString(R.string.xml_failed_name), getString(R.string.export_to_xml_name), this);

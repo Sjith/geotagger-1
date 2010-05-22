@@ -1,3 +1,4 @@
+- move geotag operations on a background thread
 - add output file to show which picture have been updated
 - test python on pc app with pyexiv library
 - propagate error to gui

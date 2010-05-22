@@ -25,7 +25,6 @@ public class GeoDbAdapter {
   private static final String DATABASE_NAME = "geoDb.db";
   
   private static final int DATABASE_VERSION = 5;
-  private static final String TAG = "DbHelper";
   private boolean mOpen;
  
   
@@ -283,6 +282,19 @@ public class GeoDbAdapter {
 			  													   c.get(Calendar.SECOND));
 	  return res;
   }
+  
+  public static String buildOutputFileName(String ext)
+	{
+		Date now = new Date();
+		
+		Calendar c = Calendar.getInstance();
+		c.setTime(now);
+		return "geotagger" + String.format("%02d%02d%02d-%02d%02d", c.get(Calendar.YEAR), 
+				  													   c.get(Calendar.MONTH) + 1, 
+				  													   c.get(Calendar.DAY_OF_MONTH),
+				  													   c.get(Calendar.HOUR_OF_DAY),
+				  													   c.get(Calendar.MINUTE)) + "." + ext;		
+	}
 
   public boolean storeToGpx(String fileName)
   {
