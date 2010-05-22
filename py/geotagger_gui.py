@@ -1,4 +1,5 @@
-from PyQt4 import QtCore, QtGui, Qt
+from PyQt4 import QtCore, QtGui
+from PyQt4.QtCore import QThread
 import sys
 import geotagger_pyui as BuildGui
 import geotagger
@@ -25,14 +26,39 @@ class Options:
         self.preserve = False
 
 
+class TaggerThread(QThread):
+    def __init__(self, parent = None):
+        QThread.__init__(self, parent)
+        self.exiting = False
+
+    def __del__(self):
+        self.exiting = True
+        self.wait()
+
+    def geotag(self, o):
+        ''' here it does the geotagging job '''
+        self._options = o
+        self.start()
+
+    def run(self):
+            geotagger.run(self._options)
+#TODO Add a callback to show the progress
+
+
+
 class GeotaggerDialog(QtGui.QMainWindow):
     def __init__(self):
         QtGui.QMainWindow.__init__(self)
         self.ui=BuildGui.Ui_Dialog()
         self.ui.setupUi(self)
+        self.thread = TaggerThread()
+
         self.connect(self.ui.goButton, QtCore.SIGNAL('clicked()'), self.go)
         self.connect(self.ui.chooseFileButton, QtCore.SIGNAL('clicked()'), self.choose_file)
         self.connect(self.ui.chooseDirButton, QtCore.SIGNAL('clicked()'), self.choose_picture_folder)
+        self.connect(self.thread, QtCore.SIGNAL("finished()"), self.geotagging_report)
+
+
         geotagger.load_extensions()
         self.ui.pictureType.addItems(geotagger.pictures_ext)
         try:
@@ -76,8 +102,11 @@ class GeotaggerDialog(QtGui.QMainWindow):
         if self._options.geofile == '' or self._options.picdir == '':
             QtGui.QMessageBox.question(self, 'Message', "Must set file and picture folder")
         else:
-            geotagger.run(self._options)
-            QtGui.QMessageBox.question(self, 'Message', "Pictures geotagged")
+            self.thread.geotag(self._options)
+
+    def geotagging_report(self):
+        ''' shows the results of the operation'''
+        QtGui.QMessageBox.question(self, 'Message', "Pictures geotagged")
 
     def save_options(self):
         self.fill_options()
