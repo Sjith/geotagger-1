@@ -56,12 +56,12 @@ public class RangeElementEditor extends Activity {
   		Bundle extras = i.getExtras();            
 		mRangeRowId = extras != null ? extras.getLong(GeoDbAdapter.ROW_ID) 
 		        : null;
-				
+		
 		setupLocationListener();
 		setupButtons();			
 	}
 	
-	
+
 	@Override
 	protected void onPause() {		
 		super.onPause();
@@ -409,5 +409,6 @@ public class RangeElementEditor extends Activity {
     	
     	ad.show();    	
     }
+
 
 }
