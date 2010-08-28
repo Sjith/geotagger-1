@@ -4,7 +4,8 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="@color/background_color"
-    android:padding="2dip"
+    android:paddingTop="5dip"
+    android:paddingBottom="5dip"
     >
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
@@ -12,6 +13,7 @@
     android:layout_height="fill_parent"
     android:background="@color/background_color"
     android:layout_gravity="center_horizontal"
+
     >
 <TextView  
     android:layout_width="fill_parent" 

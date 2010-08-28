@@ -18,9 +18,7 @@ public class RangeList extends ListActivity {
 	
 	static final private int MENU_DEL = Menu.FIRST;
 	static final private int MENU_NONE = Menu.FIRST + 1;
-	
-    private static final int RANGE_EDIT=0;
-	
+		
 	
     /** Called when the activity is first created. */
     @Override
@@ -76,11 +74,6 @@ public class RangeList extends ListActivity {
 	return false;
 	}
     
-	private void editRange(Long itemId){
-		Intent i = new Intent(this, RangeMainActivity.class);
-		i.putExtra(GeoDbAdapter.ROW_ID, itemId);
-        startActivityForResult(i, RANGE_EDIT);
-	}
 	
 	private void deleteRange(Long itemId){
 		mDbHelper.removeRange(itemId);

@@ -6,7 +6,7 @@
 <string name="from_name">From</string>
 <string name="store_range_name">Store range</string>
 <string name="range_message">Choose a range and press the button. The range will be stored together with your current position</string>
-<string name="position_message">Press the button and your position will be stored with the current time</string>
+<string name="position_message">Press the button and your position will be stored together with the current time</string>
 <string name="to_name">To</string>
 <string name="choose_position_name">Choose Existing Position</string>
 <string name="add_new_position_name">Add Position</string>
@@ -38,8 +38,8 @@
 <string name="are_u_sure_to_clean_name">Are you sure to clean all?</string>
 <string name="gps_not_ready_name">Gps not ready yet</string>
 <string name="gps_status_name">Gps Status</string>
-<string name="xml_exported_name">The xml file produced must to be processed with desktop applicaton available on the website</string>
-<string name="gpx_exported_name">The standard gpx file produced must to be processed with a suitable desktop applicaton</string>
+<string name="xml_exported_name">The xml file produced must be processed with desktop applicaton available on the website</string>
+<string name="gpx_exported_name">The standard gpx file produced must be processed with a suitable desktop applicaton</string>
 <string name="xml_failed_name">Xml creation failed</string>
 <string name="gps_error_name">Could not find valid position provider</string>
 <string name="options_name">Settings</string>
