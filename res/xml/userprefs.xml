@@ -6,4 +6,12 @@ android:key="PREF_ENABLE_GPS" android:title="@string/gps_enabled_name" android:s
 <CheckBoxPreference
 android:key="PREF_ENABLE_CELL" android:title="@string/cell_enabled_name" android:summary="@string/cell_enabled_summary" android:defaultValue="true"
 /> 
+<ListPreference
+                        android:title="Geotagger Mode"
+                        android:summary="Choose ranges and position or position and time"
+                        android:key="PREF_GEOTAGGER_TYPE"
+                        android:defaultValue="RANGE"
+                        android:entries="@array/typeArray"
+                        android:entryValues="@array/typeValues" />
+
 </PreferenceScreen>

@@ -6,7 +6,7 @@
       android:screenOrientation="portrait">
     <application android:icon="@drawable/icon" android:label="@string/app_name"
     	android:debuggable="true">
-        <activity android:name=".RangeElementEditor"
+        <activity android:name="RangeMainActivity"
                   android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -17,7 +17,8 @@
     <activity android:name=".RangeList"></activity>
 	<activity android:name=".PositionEditor"></activity>
 	<activity android:name=".PositionList"></activity>
-	<activity android:name=".PositionListModifier"></activity>
+	<activity android:name=".OnlyPosMainActivity"></activity>
+	
 	<activity android:name=".GeoPreferences" android:label="Preferences">
 </activity>
 </application>

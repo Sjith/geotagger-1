@@ -16,9 +16,8 @@ public class RangeList extends ListActivity {
 	private GeoDbAdapter mDbHelper;
 
 	
-	static final private int MENU_EDIT = Menu.FIRST;
-	static final private int MENU_DEL = Menu.FIRST + 1;
-	static final private int MENU_NONE = Menu.FIRST + 2;
+	static final private int MENU_DEL = Menu.FIRST;
+	static final private int MENU_NONE = Menu.FIRST + 1;
 	
     private static final int RANGE_EDIT=0;
 	
@@ -53,7 +52,6 @@ public class RangeList extends ListActivity {
     { 
     	super.onCreateContextMenu(menu, v, menuInfo);
     	menu.setHeaderTitle(getString(R.string.selected_range_name)); 
-    	menu.add(0, MENU_EDIT, Menu.NONE, R.string.edit_name);
     	menu.add(0, MENU_DEL, Menu.NONE, R.string.cancel_name);
     	menu.add(0, MENU_NONE, Menu.NONE, R.string.back_name);
     }
@@ -71,10 +69,6 @@ public class RangeList extends ListActivity {
 				fillData();
 				return true;
 			}
-			case (MENU_EDIT): {
-				editRange(elemIndex); 
-				return true;
-			}
 			case (MENU_NONE): {
 				// nothing
 			}
@@ -83,7 +77,7 @@ public class RangeList extends ListActivity {
 	}
     
 	private void editRange(Long itemId){
-		Intent i = new Intent(this, RangeElementEditor.class);
+		Intent i = new Intent(this, RangeMainActivity.class);
 		i.putExtra(GeoDbAdapter.ROW_ID, itemId);
         startActivityForResult(i, RANGE_EDIT);
 	}

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<array name="typeArray">
+        <item>Ranges</item>
+        <item>Position and time</item>
+    </array>
+<array name="typeValues">
+        <item>"RANGE"</item>
+        <item>"POSITION"</item>
+    </array>
+
+</resources>
