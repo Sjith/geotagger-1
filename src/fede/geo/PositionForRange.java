@@ -1,4 +1,4 @@
-package com.fede;
+package fede.geo;
 
 import java.util.Date;
 

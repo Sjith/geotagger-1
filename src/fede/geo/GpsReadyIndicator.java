@@ -1,6 +1,5 @@
-package com.fede;
+package fede.geo;
 
-import com.fede.R;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;

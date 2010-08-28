@@ -1,8 +1,7 @@
-package com.fede;
+package fede.geo;
 
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
-import com.fede.R;
 
 public class GeoPreferences extends PreferenceActivity {
 	@Override

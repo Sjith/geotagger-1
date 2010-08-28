@@ -1,6 +1,5 @@
-package com.fede;
+package fede.geo;
 
-import com.fede.R;
 import android.app.ListActivity;
 import android.database.Cursor;
 import android.os.Bundle;

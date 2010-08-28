@@ -1,4 +1,4 @@
-package com.fede;
+package fede.geo;
 
 public class Preferences {
 	private boolean gpsEnabled;

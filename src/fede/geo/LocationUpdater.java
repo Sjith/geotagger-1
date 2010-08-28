@@ -1,4 +1,4 @@
-package com.fede;
+package fede.geo;
 
 import android.content.Context;
 import android.location.Location;

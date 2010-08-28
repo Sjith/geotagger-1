@@ -1,6 +1,5 @@
-package com.fede;
+package fede.geo;
 
-import com.fede.R;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;

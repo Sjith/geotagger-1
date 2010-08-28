@@ -1,4 +1,4 @@
-package com.fede;
+package fede.geo;
 
 import java.util.Date;
 
@@ -15,7 +15,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.fede.GeoTaggerActivityMenu.CleanFinished;
+import com.admob.android.ads.AdManager;
+
+import fede.geo.GeoTaggerActivityMenu.CleanFinished;
 
 public class RangeMainActivity extends Activity implements CleanFinished{
 	
@@ -38,7 +40,11 @@ public class RangeMainActivity extends Activity implements CleanFinished{
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.main_view_range);
-		
+		AdManager.setTestDevices( new String[] {
+                AdManager.TEST_EMULATOR,             // Android emulator
+        //      "E83D20734F72FB3108F104ABC0FFC738",  // My T-Mobile G1 test phone
+        } );
+
 		mChoosenPosition = (PositionListElem) findViewById(R.id.ChoosenPositionElem);
 		mFromRange = (EditText) findViewById(R.id.FromEditText);
 		mToRange = (EditText) findViewById(R.id.ToEditText);

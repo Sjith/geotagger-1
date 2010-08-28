@@ -1,4 +1,4 @@
-package com.fede;
+package fede.geo;
 
 import android.app.AlertDialog;
 import android.content.Context;

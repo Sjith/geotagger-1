@@ -1,8 +1,7 @@
-package com.fede;
+package fede.geo;
 
 import java.util.Date;
 
-import com.fede.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.location.LocationManager;

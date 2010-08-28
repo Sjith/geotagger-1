@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res/com.fede"
+xmlns:app="http://schemas.android.com/apk/res/fede.geo"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@color/background_color"
     
     >
-<com.fede.GpsReadyIndicator android:id="@+id/GpsReadyElemEditor" android:layout_width="fill_parent" android:layout_height="wrap_content"/>
+<fede.geo.GpsReadyIndicator android:id="@+id/GpsReadyElemEditor" android:layout_width="fill_parent" android:layout_height="wrap_content"/>
  <View        android:layout_height="2dip" android:layout_width="fill_parent" android:background="#FF909090" android:paddingTop="5dip"/>
 <TextView android:textSize="18dip" android:gravity="center_horizontal" android:paddingTop="10dip" android:paddingBottom="10dip" android:text="@string/range_message" android:id="@+id/TextView01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/text_color"></TextView>
 
@@ -20,7 +20,7 @@ xmlns:app="http://schemas.android.com/apk/res/com.fede"
 </LinearLayout>
  <View        android:layout_height="2dip" android:layout_width="fill_parent" android:background="#FF909090" android:paddingTop="5dip"/>
 
-<com.fede.PositionListElem android:id="@+id/ChoosenPositionElem" android:layout_width="fill_parent" android:layout_height="wrap_content" app:textColor="@color/text_color"/>
+<fede.geo.PositionListElem android:id="@+id/ChoosenPositionElem" android:layout_width="fill_parent" android:layout_height="wrap_content" app:textColor="@color/text_color"/>
 
 <View        android:layout_height="2dip" android:layout_width="fill_parent" android:background="#FF909090"/>
 
@@ -29,8 +29,18 @@ android:</Button>
 
 <View        android:layout_height="2dip" android:layout_width="fill_parent" android:background="#FF909090" />
 
-
-	
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical" android:gravity="bottom" android:layout_width="fill_parent" android:layout_height="fill_parent" android:paddingTop="15px" android:paddingBottom="15px">
+<com.admob.android.ads.AdView  
+                        android:id="@+id/ad" 
+                        android:layout_width="fill_parent" 
+                        android:layout_height="wrap_content"
+                        app:backgroundColor="#000000"
+                        app:primaryTextColor="#FFFFFF"
+                        app:secondaryTextColor="#CCCCCC"
+                        app:keywords="Photograpy"
+                        
+                />
+</LinearLayout>
 	
 
 
