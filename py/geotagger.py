@@ -106,7 +106,7 @@ class Position:
             self.latOrientation = 'N'
         else:
             self.fLat = -self.fLat;
-            self.latOrientation = 'N'
+            self.latOrientation = 'S'
 
         self.fLong = float(self.longitude)
         if self.fLong > 0:
